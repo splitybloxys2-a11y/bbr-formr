@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Brother Roblox 2026: Inscrições</title>
+    <style>
+        /* Estilos Gerais */
+        body {
+            font-family: Arial, sans-serif;
+            color: #000;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+            background-color: #fff;
+            
+            /* Bloqueia a seleção do texto no CSS */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        /* Seção Superior (Texto e Logo) */
+        .intro-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+        }
+
+        .text-content { width: 65%; }
+        .text-content h1 { font-size: 26px; margin-top: 0; margin-bottom: 20px; }
+        .text-content p { margin-bottom: 15px; font-size: 14.5px; text-align: justify; }
+
+        .logo-content { width: 32%; }
+        .logo-content img { max-width: 100%; height: auto; display: block; }
+
+        /* Estilos Step 1 (Regiões) */
+        .form-section { border: 1px solid #b3b3b3; margin-bottom: 50px; }
+        .header-blue { background-color: #4da8f8; color: white; font-weight: bold; padding: 10px 15px; font-size: 15px; text-transform: uppercase; }
+        .form-body { padding: 15px; }
+        .subheader-blue { background-color: #4da8f8; color: white; font-weight: bold; padding: 10px 15px; font-size: 15px; }
+        .inner-content { border: 1px solid #b3b3b3; border-top: none; padding: 20px; }
+        .inner-content > p { font-size: 14px; margin-top: 0; margin-bottom: 30px; }
+
+        .regions-grid { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .row-top { display: flex; justify-content: space-between; width: 100%; gap: 15px; }
+        .row-bottom { display: flex; justify-content: center; width: 100%; gap: 30px; }
+
+        .region-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 30%;
+            cursor: pointer; 
+            transition: transform 0.2s ease;
+        }
+
+        .region-card:hover { transform: scale(1.05); }
+        .row-bottom .region-card { width: 35%; }
+        .region-card img { max-width: 100%; height: auto; margin-bottom: 15px; box-shadow: 0px 2px 5px rgba(0,0,0,0.2); }
+        .region-card span { font-weight: bold; font-size: 14px; color: #333; }
+
+        /* Estilos Steps (Formulário) */
+        #step2, #step3, #step4, #step5, #step6, #step7 { display: none; }
+        
+        .title-step2 { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+        .region-display { font-size: 18px; color: #4da8f8; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; }
+        .desc-step2 { font-size: 13.5px; margin-bottom: 20px; line-height: 1.5; }
+        .inscricao-info { font-size: 14px; margin-bottom: 20px; }
+        
+        /* Botão de Ajuda e Animação do Bloco */
+        .btn-ajuda { 
+            background-color: #4da8f8; color: #fff; padding: 12px 25px; border: none; font-weight: bold; 
+            cursor: pointer; margin-bottom: 20px; font-size: 14px; transition: background-color 0.3s; border-radius: 4px;
+        }
+        .btn-ajuda:hover { background-color: #3b8cd9; }
+
+        .help-wrapper { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s ease-out; }
+        .help-wrapper.show { grid-template-rows: 1fr; }
+        .help-inner { overflow: hidden; }
+        .help-box {
+            background-color: #f4f9ff; border-left: 5px solid #4da8f8; border-top: 1px solid #dcdcdc;
+            border-right: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc; padding: 20px 25px;
+            margin-bottom: 25px; border-radius: 4px;
+        }
+        .help-box h3 { margin-top: 0; color: #1a73e8; font-size: 18px; margin-bottom: 15px; }
+        .help-box h4 { margin-top: 20px; margin-bottom: 8px; font-size: 15px; color: #333; }
+        .help-box p { margin-bottom: 12px; font-size: 14px; line-height: 1.6; }
+        .help-box ul { margin: 0; padding-left: 0; list-style: none; }
+        .help-box ul li { margin-bottom: 6px; font-size: 14px; line-height: 1.5; color: #444; }
+        .help-box hr { border: 0; border-top: 1px solid #ccc; margin: 25px 0; }
+        
+        /* Box do formulário */
+        .form-box { border: 1px solid #b3b3b3; margin-bottom: 20px; }
+        .form-box-content { padding: 20px 30px; }
+        
+        .form-row { display: flex; margin-bottom: 15px; align-items: flex-start; }
+        .form-label { width: 35%; font-size: 14px; color: #333; padding-top: 5px; font-weight: bold; }
+        .form-label span.req { color: red; }
+        
+        .form-input-container { width: 65%; display: flex; align-items: center; gap: 8px; font-size: 14px; flex-wrap: wrap; }
+        .form-input-container input[type="text"],
+        .form-input-container input[type="email"],
+        .form-input-container input[type="date"],
+        .form-input-container input[type="number"],
+        .form-input-container select {
+            width: 100%; max-width: 350px; padding: 8px; border: 1px solid #ccc; font-family: Arial, sans-serif; font-size: 14px;
+        }
+        .form-input-container input[type="file"] {
+            width: 100%; max-width: 350px; font-family: Arial, sans-serif; font-size: 14px;
+        }
+        .form-input-container textarea {
+            width: 100%; max-width: 500px; height: 80px; padding: 8px; border: 1px solid #ccc; font-family: Arial, sans-serif; font-size: 14px; resize: vertical;
+        }
+        .short-input { width: 120px !important; }
+
+        /* Estilo Condicional para o Step 3 e Step 4 */
+        .conditional-row {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            margin-bottom: 0;
+            padding-left: 15px;
+            border-left: 3px solid #4da8f8;
+            transition: max-height 0.4s ease, opacity 0.4s ease, margin-bottom 0.4s ease;
+            background-color: #fcfcfc;
+        }
+        .conditional-row.show {
+            max-height: 200px;
+            opacity: 1;
+            margin-bottom: 15px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; margin-bottom: 50px; }
+        .btn-salvar { background-color: #d9d9d9; color: #333; padding: 12px 20px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s;}
+        .btn-salvar:hover { background-color: #c9c9c9; }
+        .btn-proximo { background-color: #4da8f8; color: white; padding: 12px 40px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s;}
+        .btn-proximo:hover { background-color: #3b8cd9; }
+
+        #autosave-status { display: none; color: #2e7d32; font-size: 13px; font-weight: bold; float: right; margin-top: 5px; }
+
+        /* Estilos da Tela Final de Agradecimento */
+        #step8 { display: none; text-align: center; padding: 40px 20px; animation: fadeIn 0.8s ease-in-out; }
+
+        .final-box { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; }
+        .final-box h2 { color: #333; font-size: 24px; margin-bottom: 20px; border-bottom: 2px solid #4da8f8; padding-bottom: 10px; }
+        .final-box p { font-size: 16px; color: #555; margin-bottom: 15px; line-height: 1.6; }
+        .final-box .luck-text { font-weight: bold; color: #000; margin-top: 20px; font-size: 18px; }
+        .final-box .inscricao-numero { background: #f0f0f0; padding: 10px; border-radius: 4px; font-weight: bold; margin-top: 30px; display: inline-block; color: #333; }
+        
+        /* Dummie Imagem */
+        .final-box img.dummie-img {
+            max-width: 200px;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsividade Básica */
+        @media (max-width: 768px) {
+            .intro-section { flex-direction: column; }
+            .text-content, .logo-content { width: 100%; }
+            .logo-content { margin-top: 20px; }
+            .row-top, .row-bottom { flex-direction: column; align-items: center; }
+            .region-card, .row-bottom .region-card { width: 80%; margin-bottom: 20px; }
+            
+            .form-row, .conditional-row.show { flex-direction: column; }
+            .form-label, .form-input-container { width: 100%; }
+            .form-label { margin-bottom: 5px; }
+            .form-actions { flex-direction: column; }
+            .btn-salvar, .btn-proximo { width: 100%; }
+            .conditional-row { padding-left: 10px; }
+        }
+    </style>
+</head>
+<body oncopy="return false" oncut="return false" onselectstart="return false" oncontextmenu="return false">
+
+    <div class="container">
+        
+        <div id="step1">
+            <div class="intro-section">
+                <div class="text-content">
+                    <h1>O BBR26 já está na área!</h1>
+                    <p>Se o seu sonho é ser um brother ou sister, essa é a sua chance!</p>
+                    <p>Para fazer parte da casa mais vigiada do Roblox, o primeiro passo é se inscrever. Ao acessar o formulário, você encontrará um questionário com 90 perguntas. Compartilhe tudo sobre a sua vida e não se esqueça de caprichar no vídeo e nas fotos para que possamos te conhecer melhor. Queremos saber por que você merece uma vaga no programa!</p>
+                    <p>Atenção: a sua inscrição só será considerada válida se você concluir todo o processo. Isso significa que, para participar da seleção, é necessário preencher todos os campos obrigatórios do formulário do BBR26, incluindo o envio das fotos e vídeos.</p>
+                    <p>Boa sorte!</p>
+                    <p><b>Equipe BBR</b></p>
+                </div>
+                
+                <div class="logo-content">
+                    <img src="imgs/bigbrotheroblox.png" alt="Logo Big Brother Roblox">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="header-blue">Cadastre-se abaixo:</div>
+                <div class="form-body">
+                    <div class="subheader-blue">Selecione a sua região</div>
+                    <div class="inner-content">
+                        <p>Quer tentar uma <u>ENTREVISTA VIRTUAL</u> com a produção do BBR? Comece selecionando a região do Brasil onde você nasceu ou mora e preencha todos os dados solicitados.</p>
+                        
+                        <div class="regions-grid">
+                            <div class="row-top">
+                                <div class="region-card" onclick="goToStep(2, 'SUDESTE')">
+                                    <img src="imgs/sudeste.png" alt="Sudeste">
+                                    <span>SUDESTE</span>
+                                </div>
+                                <div class="region-card" onclick="goToStep(2, 'SUL')">
+                                    <img src="imgs/sul.png" alt="Sul">
+                                    <span>SUL</span>
+                                </div>
+                                <div class="region-card" onclick="goToStep(2, 'CENTRO-OESTE')">
+                                    <img src="imgs/centro_oeste.png" alt="Centro-Oeste">
+                                    <span>CENTRO-OESTE</span>
+                                </div>
+                            </div>
+                            <div class="row-bottom">
+                                <div class="region-card" onclick="goToStep(2, 'NORDESTE')">
+                                    <img src="imgs/nordeste.png" alt="Nordeste">
+                                    <span>NORDESTE</span>
+                                </div>
+                                <div class="region-card" onclick="goToStep(2, 'NORTE')">
+                                    <img src="imgs/norte.png" alt="Norte">
+                                    <span>NORTE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="step2">
+            <div class="title-step2">Bem-vindo à seleção para o BBR 26!</div>
+            <div id="regiao-selecionada" class="region-display"></div>
+            
+            <div class="desc-step2">
+                No formulário abaixo, você precisa fornecer informações importantes que vão nos ajudar a conhecê-lo melhor.<br>
+                Por favor, responda todas as perguntas de forma honesta e clara. Nas questões discursivas, tente adicionar o máximo de detalhes sobre você. Boa sorte!
+            </div>
+            
+            <div class="inscricao-info">
+                O seu número de inscrição é: <strong id="display-inscricao-id">Carregando...</strong>
+                <span id="autosave-status">Salvando rascunho...</span>
+            </div>
+
+            <button class="btn-ajuda" onclick="toggleAjuda()">PRECISA DE AJUDA?</button>
+
+            <div id="help-wrapper" class="help-wrapper">
+                <div class="help-inner">
+                    <div class="help-box">
+                        <h3>Como preencher o formulário – Participação BBR</h3>
+                        <p>O formulário é a etapa mais importante do processo seletivo. É por meio dele que a produção conhece melhor o participante, sua história, personalidade e motivações.</p>
+                        
+                        <p>Todas as informações solicitadas são de uso exclusivo da produção do BBR26. Portanto, é obrigatório que o candidato preencha todos os campos com veracidade, coerência e responsabilidade, garantindo que os dados estejam corretos, completos e atualizados.</p>
+                        
+                        <p>Respostas genéricas, inconsistentes ou artificiais reduzem significativamente as chances de continuidade no processo. Seja autêntico.</p>
+                        
+                        <p>O uso de inteligência artificial para responder o formulário é <strong>expressamente proibido</strong>. Qualquer indício de respostas automatizadas resultará em desclassificação imediata.</p>
+
+                        <hr>
+
+                        <h3>Política de Privacidade e Integridade do Processo</h3>
+                        <p><em>(Aprovada pelo Departamento de Diretrizes e Políticas do Big Brother Roblox)</em></p>
+
+                        <h4>1. Coleta e uso de dados</h4>
+                        <ul>
+                            <li><strong>1.1.</strong> Todos os dados fornecidos são coletados exclusivamente para fins de análise, triagem e seleção de participantes.</li>
+                            <li><strong>1.2.</strong> As informações não serão utilizadas para fins comerciais externos ou compartilhadas com terceiros sem necessidade operacional.</li>
+                            <li><strong>1.3.</strong> O candidato declara estar ciente de que seus dados podem ser utilizados internamente para validação de perfil e análise comportamental.</li>
+                        </ul>
+
+                        <h4>2. Veracidade das informações</h4>
+                        <ul>
+                            <li><strong>2.1.</strong> O candidato é integralmente responsável pelas informações fornecidas.</li>
+                            <li><strong>2.2.</strong> Dados falsos, incompletos ou inconsistentes resultarão em eliminação imediata.</li>
+                            <li><strong>2.3.</strong> A produção se reserva o direito de verificar, cruzar e validar todas as informações fornecidas.</li>
+                        </ul>
+
+                        <h4>3. Uso indevido de ferramentas (IA e automações)</h4>
+                        <ul>
+                            <li><strong>3.1.</strong> É proibido o uso de inteligência artificial, scripts automatizados ou qualquer ferramenta que comprometa a autenticidade das respostas.</li>
+                            <li><strong>3.2.</strong> Respostas identificadas como artificiais, padronizadas ou incompatíveis com o perfil do candidato serão desconsideradas.</li>
+                            <li><strong>3.3.</strong> A detecção de qualquer tentativa de fraude implicará desclassificação automática, sem aviso prévio.</li>
+                        </ul>
+
+                        <h4>4. Confidencialidade e segurança</h4>
+                        <ul>
+                            <li><strong>4.1.</strong> Os dados serão armazenados em ambiente seguro, com acesso restrito à equipe responsável pela seleção.</li>
+                            <li><strong>4.2.</strong> Medidas técnicas e administrativas são aplicadas para proteger as informações contra acesso não autorizado.</li>
+                            <li><strong>4.3.</strong> O candidato reconhece que nenhum sistema é totalmente isento de riscos, mas que todas as boas práticas de segurança são adotadas.</li>
+                        </ul>
+
+                        <h4>5. Direitos e consentimento do candidato</h4>
+                        <ul>
+                            <li><strong>5.1.</strong> Ao enviar o formulário, o candidato declara estar de acordo com todos os termos aqui descritos.</li>
+                            <li><strong>5.2.</strong> O envio do formulário configura consentimento explícito para uso dos dados conforme esta política.</li>
+                            <li><strong>5.3.</strong> O candidato pode solicitar a exclusão de seus dados, sujeito à análise e às necessidades do processo seletivo.</li>
+                        </ul>
+
+                        <h4>6. Penalidades e desclassificação</h4>
+                        <ul>
+                            <li><strong>6.1.</strong> Qualquer violação destas diretrizes resultará em eliminação imediata do processo.</li>
+                            <li><strong>6.2.</strong> A produção não é obrigada a justificar decisões de desclassificação.</li>
+                            <li><strong>6.3.</strong> Tentativas de burlar o sistema, incluindo uso de múltiplas contas ou informações manipuladas, serão tratadas como fraude.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <form onsubmit="event.preventDefault(); goToStep(3);">
+                <div class="form-box">
+                    <div class="header-blue">DADOS PESSOAIS</div>
+                    <div class="form-box-content">
+                        
+                        <div class="form-row">
+                            <div class="form-label">1. Nome Completo: <span class="req">*</span></div>
+                            <div class="form-input-container"><input type="text" id="nome" required></div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-label">2. Sexo: <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="sexo" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Feminino</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">3. Data de nascimento:</div>
+                            <div class="form-input-container"><input type="date" id="nascimento"></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">3a. Idade:</div>
+                            <div class="form-input-container"><input type="number" id="idade" class="short-input"></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">6. E-mail: <span class="req">*</span></div>
+                            <div class="form-input-container"><input type="email" id="email" required></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">8. Cidade onde nasceu: <span class="req">*</span></div>
+                            <div class="form-input-container"><input type="text" id="cidade" required></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">9. Estado onde nasceu: <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="estado" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <div class="header-blue">INFORMAÇÕES RP</div>
+                    <div class="form-box-content">
+
+                        <div class="form-row">
+                            <div class="form-label">10. Seu nick do Roblox:</div>
+                            <div class="form-input-container"><input type="text" id="nick_roblox" class="short-input"></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">11. Seu nick do Discord:</div>
+                            <div class="form-input-container"><input type="text" id="nick_discord" class="short-input"></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">12. Como gostaria de ser chamado?</div>
+                            <div class="form-input-container"><input type="text" id="como_chamar" class="short-input"></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">13. Orientação sexual: <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="orientacao" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="heterossexual">Heterossexual</option>
+                                    <option value="homossexual">Homossexual</option>
+                                    <option value="bissexual">Bissexual</option>
+                                    <option value="pansexual">Pansexual</option>
+                                    <option value="assexual">Assexual</option>
+                                    <option value="outros">Outros</option>
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">14. Fale mais sobre seus<br>jogos favoritos do Roblox: <span class="req">*</span></div>
+                            <div class="form-input-container"><textarea id="jogos_fav" required></textarea></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">Você tem VoiceChat no Roblox? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="voicechat" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-salvar" onclick="alert('Seu rascunho já está salvo no sistema!')">SALVAR E CONTINUAR MAIS TARDE</button>
+                    <button type="submit" class="btn-proximo">PRÓXIMO</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="step3">
+            <div class="title-step2">MÍDIA (ROBLOX)</div>
+            <div class="desc-step2">Queremos saber um pouco mais sobre sua vida no metaverso e como você lida com a exposição.</div>
+
+            <form onsubmit="event.preventDefault(); goToStep(4);">
+                <div class="form-box">
+                    <div class="header-blue">MÍDIA</div>
+                    <div class="form-box-content">
+                        
+                        <div class="form-row">
+                            <div class="form-label">15. Já participou de algum reality no Roblox? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="ja_participou_reality" onchange="toggleCondition('ja_participou_reality', 'ja_participou_reality_extra')" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row conditional-row" id="ja_participou_reality_extra">
+                            <div class="form-label">Quais realities você já participou? Conte brevemente sua experiência. <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="quais_realities"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">16. Você já teve algum tipo de exposição dentro do Roblox? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="exposicao_roblox" onchange="toggleCondition('exposicao_roblox', 'exposicao_roblox_extra')" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row conditional-row" id="exposicao_roblox_extra">
+                            <div class="form-label">Explique onde e como foi essa exposição. <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="exposicao_detalhes"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">17. Você se considera uma pessoa influente dentro de alguma comunidade? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="influente_comunidade" onchange="toggleCondition('influente_comunidade', 'influente_comunidade_extra')" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row conditional-row" id="influente_comunidade_extra">
+                            <div class="form-label">Explique em qual comunidade e por quê. <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="influente_detalhes"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">18. Você já se envolveu em alguma polêmica ou situação que gerou repercussão? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="envolveu_polemica" onchange="toggleCondition('envolveu_polemica', 'envolveu_polemica_extra')" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row conditional-row" id="envolveu_polemica_extra">
+                            <div class="form-label">Explique o que aconteceu. <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="polemica_detalhes"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">19. Como você lida com exposição pública, críticas e comentários negativos? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="lida_exposicao_criticas" required></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-salvar" onclick="goToStep(2)">VOLTAR</button>
+                    <button type="submit" class="btn-proximo">PRÓXIMO</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="step4">
+            <div class="title-step2">PERSONALIDADE / TEMPERAMENTO</div>
+            <div class="desc-step2">Queremos saber um pouco mais sobre quem você é de verdade, como você lida com a pressão e como interage com as pessoas ao seu redor.</div>
+
+            <form onsubmit="event.preventDefault(); goToStep(5);">
+                <div class="form-box">
+                    <div class="header-blue">PERSONALIDADE / TEMPERAMENTO</div>
+                    <div class="form-box-content">
+                        
+                        <div class="form-row">
+                            <div class="form-label">20. Que tipo de pessoa ou situação tira você do sério? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="tira_do_serio" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">21. Você tem alguma mania ou esquisitice? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="mania_esquisitice" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">22. Como você reage quando está sob pressão? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="reage_pressao" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">23. Você se considera mais explosivo(a) ou controlado(a)? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="explosivo_controlado" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="Explosivo">Explosivo</option>
+                                    <option value="Controlado">Controlado</option>
+                                    <option value="Depende da situação">Depende da situação</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">24. O que mais te irrita em convivência com outras pessoas?</div>
+                            <div class="form-input-container">
+                                <textarea id="irrita_convivencia"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">25. Você é uma pessoa competitiva? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="pessoa_competitiva" onchange="toggleCondition('pessoa_competitiva', 'pessoa_competitiva_extra')" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row conditional-row" id="pessoa_competitiva_extra">
+                            <div class="form-label">Até que ponto você vai para ganhar? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="ponto_ganhar"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-salvar" onclick="goToStep(3)">VOLTAR</button>
+                    <button type="submit" class="btn-proximo">PRÓXIMO</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="step5">
+            <div class="title-step2">FALE MAIS SOBRE VOCÊ</div>
+            <div class="desc-step2">Queremos conhecer a sua essência, sua história e o que te motiva a entrar no jogo. Detalhe bem as suas respostas!</div>
+
+            <form onsubmit="event.preventDefault(); goToStep(6);">
+                <div class="form-box">
+                    <div class="header-blue">FALE MAIS SOBRE VOCÊ</div>
+                    <div class="form-box-content">
+                        
+                        <div class="form-row">
+                            <div class="form-label">25. Faça um resumo da sua história de vida. Seja objetivo e criativo. <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="resumo_historia" required placeholder="Conte sua trajetória, momentos marcantes e quem você é hoje..." maxlength="1000"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">26. Por que você quer participar do Big Brother Brasil? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="motivo_participar" required placeholder="Explique suas motivações..." maxlength="1000"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">27. Por que vai ser legal te assistir? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="por_que_assistir" required placeholder="O que você entrega de entretenimento, personalidade, jogo, etc..." maxlength="1000"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">28. O que você faria com o prêmio se ganhasse? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <textarea id="o_que_faria_premio" required maxlength="1000"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">29. Você prefere jogar sozinho ou em grupo? <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <select id="jogar_sozinho_grupo" required>
+                                    <option value="">Selecionar...</option>
+                                    <option value="Sozinho">Sozinho</option>
+                                    <option value="Em grupo">Em grupo</option>
+                                    <option value="Depende">Depende</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-salvar" onclick="goToStep(4)">VOLTAR</button>
+                    <button type="submit" class="btn-proximo">PRÓXIMO</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="step6">
+            <div class="title-step2">REDES SOCIAIS</div>
+            <div class="desc-step2">Queremos acompanhar você também nas redes! Compartilhe seus perfis abaixo para conhecermos mais do seu estilo.</div>
+
+            <form onsubmit="event.preventDefault(); goToStep(7);">
+                <div class="form-box">
+                    <div class="header-blue">REDES SOCIAIS</div>
+                    <div class="form-box-content">
+                        
+                        <div class="form-row">
+                            <div class="form-label">30. Instagram (@ do perfil):</div>
+                            <div class="form-input-container">
+                                <input type="text" id="instagram" placeholder="@seuusuario">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">31. Twitter/X (@ do perfil):</div>
+                            <div class="form-input-container">
+                                <input type="text" id="twitter" placeholder="@seuusuario">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-label">32. TikTok (@ do perfil): <span class="req">*</span></div>
+                            <div class="form-input-container">
+                                <input type="text" id="tiktok" required placeholder="@seuusuario">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-salvar" onclick="goToStep(5)">VOLTAR</button>
+                    <button type="submit" class="btn-proximo">PRÓXIMO</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="step7">
+            <div class="title-step2">ENVIO DAS MÍDIAS</div>
+            <div class="desc-step2">Chegou a hora de mostrar quem é você no jogo! O envio da foto e do vídeo é obrigatório para concluir sua inscrição.</div>
+
+            <form onsubmit="event.preventDefault(); validarMidiasEFinalizar();">
+                <div class="form-box">
+                    <div class="header-blue">FOTOS</div>
+                    <div class="form-box-content">
+                        
+                        <div class="form-row" style="flex-direction: column;">
+                            <label class="form-label" style="width: 100%; margin-bottom: 5px;">33. Foto do seu avatar no Roblox: <span class="req">*</span></label>
+                            <span style="font-size: 12px; color: #666; margin-bottom: 10px;">Formatos permitidos: JPG, PNG (Tamanho máximo: 5MB)</span>
+                            
+                            <div class="form-input-container" style="width: 100%;">
+                                <input type="file" id="foto_avatar" accept=".jpg, .jpeg, .png" required onchange="handleImageUpload(event)">
+                            </div>
+                            
+                            <div id="erro_foto" style="color: red; font-size: 13px; font-weight: bold; margin-top: 5px; display: none;"></div>
+                            
+                            <div id="preview_foto_container" style="display: none; margin-top: 15px;">
+                                <p style="font-size: 13px; font-weight: bold; margin: 0 0 5px 0;">Preview da Imagem:</p>
+                                <img id="preview_foto" style="max-width: 150px; border: 1px solid #ccc; border-radius: 5px;">
+                                <br>
+                                <button type="button" onclick="removerFoto()" style="margin-top: 10px; background: none; border: 1px solid red; color: red; padding: 5px 10px; cursor: pointer; border-radius: 3px; font-size: 12px;">Remover / Substituir Foto</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-box">
+                    <div class="header-blue">VÍDEO</div>
+                    <div class="form-box-content">
+                        
+                        <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin-bottom: 25px; border-radius: 3px;">
+                            <h4 style="margin: 0 0 10px 0; color: #856404; font-size: 15px;">💡 Dica de Ouro para o Vídeo de Inscrição:</h4>
+                            <p style="margin: 0; font-size: 13.5px; color: #533f03; line-height: 1.5;">
+                                <strong>Quer se destacar e ter nível de "seleção real"?</strong> Não faça um vídeo genérico! Mostre a sua energia e personalidade logo de cara. Fale de forma clara, traga sua voz (narrando ou mostrando você) e explique sua verdadeira <strong>estratégia</strong>. O que te faz diferente de todo mundo que está se inscrevendo? Por que a casa do BBR no Roblox precisa do SEU entretenimento? Seja autêntico, criativo e direto ao ponto!
+                            </p>
+                        </div>
+
+                        <div class="form-row" style="flex-direction: column;">
+                            <label class="form-label" style="width: 100%; margin-bottom: 5px;">34. Vídeo: "Por que eu mereço entrar no BBR?" <br><span style="font-weight: normal; font-size: 13px;">(Vídeo seu dentro de algum jogo no Roblox)</span> <span class="req">*</span></label>
+                            <span style="font-size: 12px; color: #666; margin-bottom: 10px;">Formatos permitidos: MP4, MOV | Duração: Mínimo 30s e Máximo 2 minutos (Tamanho máx: 50MB)</span>
+                            
+                            <div class="form-input-container" style="width: 100%;">
+                                <input type="file" id="video_bbr" accept=".mp4, .mov, video/mp4, video/quicktime" required onchange="handleVideoUpload(event)">
+                            </div>
+
+                            <div id="erro_video" style="color: red; font-size: 13px; font-weight: bold; margin-top: 5px; display: none;"></div>
+
+                            <div id="progress_container" style="display: none; width: 100%; max-width: 350px; margin-top: 15px;">
+                                <div style="background: #e0e0e0; border-radius: 4px; overflow: hidden; height: 12px;">
+                                    <div id="progress_bar" style="width: 0%; height: 100%; background: #4da8f8; transition: width 0.2s ease;"></div>
+                                </div>
+                                <div id="progress_text" style="font-size: 12px; margin-top: 5px; color: #333; font-weight: bold;">Enviando... 0%</div>
+                            </div>
+
+                            <div id="preview_video_container" style="display: none; margin-top: 15px;">
+                                <p style="font-size: 13px; font-weight: bold; margin: 0 0 5px 0;">Preview do Vídeo:</p>
+                                <video id="preview_video" controls style="max-width: 100%; max-height: 250px; border: 1px solid #ccc; border-radius: 5px; background: #000;"></video>
+                                <br>
+                                <button type="button" onclick="removerVideo()" style="margin-top: 10px; background: none; border: 1px solid red; color: red; padding: 5px 10px; cursor: pointer; border-radius: 3px; font-size: 12px;">Remover / Substituir Vídeo</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-salvar" onclick="goToStep(6)">VOLTAR</button>
+                    <button type="submit" class="btn-proximo" style="background-color: #28a745;">FINALIZAR INSCRIÇÃO</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="step8">
+            <div class="final-box">
+                <h2>Obrigado por se inscrever para o BBR 26!</h2>
+                <p>Agora é com a gente! Vamos dar aquela espiadinha no seu material para te conhecer.</p>
+                <p>E não desliga não. Podemos entrar em contato com você em breve, por e-mail ou Discord!</p>
+                
+                <!-- Adicione a sua imagem aqui (substitua a URL abaixo pela do seu Dummie) -->
+                <img src="imgs/a5888b25-8195-4612-a00c-3a05b2ca88db.png" alt="Dummie BBR" class="dummie-img">
+                
+                <p class="luck-text">Boa sorte!</p>
+                
+                <div class="inscricao-numero">
+                    O seu número de inscrição é: <span id="final-inscricao-id" style="color: #666;">Carregando...</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Navegação de páginas genérica
+        function goToStep(step, regionName) {
+            // Se uma região foi passada, atualiza o display no step 2
+            if (regionName) {
+                document.getElementById('regiao-selecionada').innerText = "Região selecionada: " + regionName;
+                localStorage.setItem('bbb_regiao', regionName); // Salva no cache
+            }
+
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            document.getElementById('step4').style.display = 'none';
+            document.getElementById('step5').style.display = 'none';
+            document.getElementById('step6').style.display = 'none';
+            document.getElementById('step7').style.display = 'none';
+            document.getElementById('step8').style.display = 'none';
+            
+            document.getElementById('step' + step).style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mostrar ajuda
+        function toggleAjuda() {
+            var helpWrapper = document.getElementById('help-wrapper');
+            helpWrapper.classList.toggle('show');
+        }
+
+        // Lógica condicional e adição de "required" obrigatório
+        function toggleCondition(selectId, extraDivId) {
+            const select = document.getElementById(selectId);
+            const extraDiv = document.getElementById(extraDivId);
+            const textarea = extraDiv.querySelector('textarea');
+
+            if (select.value === 'Sim') {
+                extraDiv.classList.add('show');
+                textarea.setAttribute('required', 'required'); // Torna obrigatório
+            } else {
+                extraDiv.classList.remove('show');
+                textarea.removeAttribute('required'); // Remove a obrigatoriedade
+                textarea.value = ''; // Limpa caso usuário desista
+            }
+            autoSave();
+        }
+
+        // ==== LÓGICA DE UPLOAD E PREVIEW DAS MÍDIAS (STEP 7) ====
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            const errorDiv = document.getElementById('erro_foto');
+            const previewContainer = document.getElementById('preview_foto_container');
+            const previewImg = document.getElementById('preview_foto');
+
+            // Reset UI
+            errorDiv.style.display = 'none';
+            previewContainer.style.display = 'none';
+
+            if (!file) return;
+
+            // Valida tipo
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                errorDiv.innerText = '⚠️ Formato inválido! Envie apenas imagens JPG ou PNG.';
+                errorDiv.style.display = 'block';
+                event.target.value = ''; // Limpa o input
+                return;
+            }
+
+            // Valida tamanho (Até 5MB)
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                errorDiv.innerText = `⚠️ A imagem excede o limite de 5MB. (Tamanho atual: ${(file.size / (1024*1024)).toFixed(2)}MB)`;
+                errorDiv.style.display = 'block';
+                event.target.value = ''; // Limpa o input
+                return;
+            }
+
+            // Exibir preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewContainer.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removerFoto() {
+            document.getElementById('foto_avatar').value = '';
+            document.getElementById('preview_foto_container').style.display = 'none';
+            document.getElementById('erro_foto').style.display = 'none';
+        }
+
+        function handleVideoUpload(event) {
+            const file = event.target.files[0];
+            const errorDiv = document.getElementById('erro_video');
+            const previewContainer = document.getElementById('preview_video_container');
+            const previewVideo = document.getElementById('preview_video');
+            const progressContainer = document.getElementById('progress_container');
+            const progressBar = document.getElementById('progress_bar');
+            const progressText = document.getElementById('progress_text');
+
+            // Reset UI
+            errorDiv.style.display = 'none';
+            previewContainer.style.display = 'none';
+            progressContainer.style.display = 'none';
+            
+            if (!file) return;
+
+            // Valida tipo
+            const validTypes = ['video/mp4', 'video/quicktime'];
+            if (!validTypes.includes(file.type)) {
+                errorDiv.innerText = '⚠️ Formato inválido! Envie apenas vídeos MP4 ou MOV.';
+                errorDiv.style.display = 'block';
+                event.target.value = '';
+                return;
+            }
+
+            // Valida tamanho (Até 50MB)
+            const maxSize = 50 * 1024 * 1024;
+            if (file.size > maxSize) {
+                errorDiv.innerText = `⚠️ O vídeo excede o limite de 50MB. (Tamanho atual: ${(file.size / (1024*1024)).toFixed(2)}MB)`;
+                errorDiv.style.display = 'block';
+                event.target.value = '';
+                return;
+            }
+
+            // Simulador visual de Barra de Progresso do Upload
+            progressContainer.style.display = 'block';
+            let progresso = 0;
+            progressBar.style.width = '0%';
+            
+            const intervalo = setInterval(() => {
+                progresso += Math.floor(Math.random() * 15) + 5; // incrementa randomicamente para parecer real
+                if (progresso >= 100) progresso = 100;
+                
+                progressBar.style.width = progresso + '%';
+                progressText.innerText = `Enviando arquivo... ${progresso}%`;
+
+                if (progresso >= 100) {
+                    clearInterval(intervalo);
+                    progressText.innerText = 'Upload concluído e processando metadados...';
+                    
+                    // Concluído a barra, agora valida duração através do Preview
+                    const videoURL = URL.createObjectURL(file);
+                    previewVideo.src = videoURL;
+                    
+                    previewVideo.onloadedmetadata = function() {
+                        const duration = previewVideo.duration;
+                        
+                        if (duration < 30 || duration > 120) {
+                            errorDiv.innerText = `⚠️ O vídeo deve ter no mínimo 30 segundos e no máximo 2 minutos. (Duração atual: ${Math.round(duration)} segundos)`;
+                            errorDiv.style.display = 'block';
+                            event.target.value = ''; // Limpa input
+                            progressContainer.style.display = 'none';
+                        } else {
+                            progressText.innerText = 'Vídeo validado com sucesso!';
+                            progressText.style.color = 'green';
+                            previewContainer.style.display = 'block';
+                        }
+                    };
+                }
+            }, 200); // Velocidade do fake upload
+        }
+
+        function removerVideo() {
+            document.getElementById('video_bbr').value = '';
+            document.getElementById('preview_video_container').style.display = 'none';
+            document.getElementById('erro_video').style.display = 'none';
+            document.getElementById('progress_container').style.display = 'none';
+            
+            const videoElement = document.getElementById('preview_video');
+            videoElement.pause();
+            videoElement.removeAttribute('src');
+            videoElement.load();
+        }
+
+        function validarMidiasEFinalizar() {
+            // Verificação de segurança extra caso o 'required' HTML falhe
+            const foto = document.getElementById('foto_avatar').files[0];
+            const video = document.getElementById('video_bbr').files[0];
+
+            if (!foto || !video) {
+                alert("Por favor, garanta que a Foto e o Vídeo foram enviados e validados corretamente antes de concluir.");
+                return;
+            }
+
+            // Se chegou aqui, os arquivos passaram por toda validação nos onchange.
+            finalizar();
+        }
+
+        // ==== SISTEMA DE AUTO-SAVE (Rascunho) ====
+        let saveTimeout;
+        
+        function autoSave() {
+            const formData = {};
+            const inputs = document.querySelectorAll('input, select, textarea');
+            
+            inputs.forEach(input => {
+                // Arquivos file não podem/devem ser salvos no localstorage
+                if (input.id && input.type !== 'file') {
+                    formData[input.id] = input.value;
+                }
+            });
+            
+            localStorage.setItem('bbb_draft_v2', JSON.stringify(formData));
+
+            // Mostra status visual de salvo
+            const status = document.getElementById('autosave-status');
+            status.style.display = 'inline-block';
+            status.innerText = 'Rascunho salvo!';
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => { status.style.display = 'none'; }, 2000);
+        }
+
+        function loadDraft() {
+            // Gera ou recupera o ID único da inscrição
+            let inscricaoId = localStorage.getItem('bbb_inscricao_id');
+            if (!inscricaoId) {
+                inscricaoId = Math.random().toString(36).substr(2, 6).toUpperCase() + '-' + Math.floor(Math.random() * 1000000);
+                localStorage.setItem('bbb_inscricao_id', inscricaoId);
+            }
+            document.getElementById('display-inscricao-id').innerText = inscricaoId;
+            document.getElementById('final-inscricao-id').innerText = inscricaoId;
+
+            // Carrega região salva se houver
+            const savedRegion = localStorage.getItem('bbb_regiao');
+            if (savedRegion) {
+                document.getElementById('regiao-selecionada').innerText = "Região selecionada: " + savedRegion;
+            }
+
+            const draft = localStorage.getItem('bbb_draft_v2');
+            if (draft) {
+                const formData = JSON.parse(draft);
+                for (const id in formData) {
+                    const element = document.getElementById(id);
+                    if (element && element.type !== 'file') {
+                        element.value = formData[id];
+                        // Dispara a condicional se for as perguntas que a possuem
+                        if (['ja_participou_reality', 'exposicao_roblox', 'influente_comunidade', 'envolveu_polemica', 'pessoa_competitiva'].includes(id)) {
+                            toggleCondition(id, id + '_extra');
+                        }
+                    }
+                }
+            }
+        }
+
+        // Ouve todas as digitações do usuário para salvar em tempo real (exceto file inputs)
+        document.addEventListener('input', (e) => {
+            if ((e.target.tagName === 'INPUT' && e.target.type !== 'file') || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                document.getElementById('autosave-status').innerText = 'Salvando...';
+                document.getElementById('autosave-status').style.display = 'inline-block';
+                autoSave();
+            }
+        });
+
+        // Executa ao abrir a página
+        window.onload = loadDraft;
+
+        // Finaliza o formulário e envia para o backend
+        async function finalizar() {
+            // Mostrar botão carregando
+            const btnSubmit = document.querySelector('#step7 .btn-proximo');
+            const originalText = btnSubmit.innerText;
+            btnSubmit.innerText = "ENVIANDO DADOS...";
+            btnSubmit.disabled = true;
+
+            try {
+                const formData = new FormData();
+                
+                // Pegar o ID e a Região
+                formData.append('inscricao_id', localStorage.getItem('bbb_inscricao_id') || 'DESCONHECIDO');
+                formData.append('regiao', localStorage.getItem('bbb_regiao') || 'NÃO INFORMADO');
+
+                // Pegar todos os inputs e textareas do form
+                const inputs = document.querySelectorAll('input:not([type="file"]), select, textarea');
+                inputs.forEach(input => {
+                    if (input.id) {
+                        formData.append(input.id, input.value);
+                    }
+                });
+
+                // Pegar arquivos
+                const foto = document.getElementById('foto_avatar').files[0];
+                const video = document.getElementById('video_bbr').files[0];
+                if (foto) formData.append('foto_avatar', foto);
+                if (video) formData.append('video_bbr', video);
+
+                // Enviar para o Backend local
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Falha na resposta do servidor.');
+                }
+
+                const result = await response.json();
+                console.log(result);
+
+                // Esconde todos os steps
+                for (let i = 1; i <= 7; i++) {
+                    document.getElementById('step' + i).style.display = 'none';
+                }
+                
+                // Mostra a aba de agradecimento (Step 8)
+                document.getElementById('step8').style.display = 'block';
+                
+                // Rola para o topo
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // Limpa os dados do rascunho
+                localStorage.removeItem('bbb_draft_v2'); 
+                localStorage.removeItem('bbb_regiao');
+                localStorage.removeItem('bbb_inscricao_id');
+
+            } catch (error) {
+                console.error('Erro ao enviar:', error);
+                alert('Houve um erro ao enviar sua inscrição. Verifique se o servidor local (iniciar.bat) está rodando e tente novamente.');
+            } finally {
+                btnSubmit.innerText = originalText;
+                btnSubmit.disabled = false;
+            }
+        }
+    </script>
+
+</body>
+</html>

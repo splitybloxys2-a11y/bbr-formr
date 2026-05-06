@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Produtor - BBR 26</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; height: 100vh; margin: 0; background: #e9ecef; color: #333; }
+        
+        /* Sidebar */
+        .sidebar { width: 280px; background: #fff; border-right: 1px solid #dee2e6; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; background: #343a40; color: white; font-weight: bold; font-size: 18px; text-align: center; }
+        .region-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
+        .region-item { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #f8f9fa; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .region-item:hover { background: #f1f3f5; }
+        .region-item.active { background: #e7f5ff; border-left: 4px solid #339af0; font-weight: bold; color: #1864ab; }
+        .badge { background: #adb5bd; color: white; border-radius: 12px; padding: 3px 10px; font-size: 12px; font-weight: bold; }
+        .region-item.active .badge { background: #339af0; }
+
+        .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* List View */
+        #list-view { flex: 1; padding: 20px; overflow-y: auto; }
+        .list-header { font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #495057; display: flex; justify-content: space-between; align-items: center;}
+        
+        .candidate-card { display: flex; background: #fff; padding: 15px; margin-bottom: 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); align-items: center; border: 1px solid #e9ecef; transition: box-shadow 0.2s; }
+        .candidate-card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .candidate-card img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; margin-right: 20px; border: 2px solid #dee2e6; }
+        
+        .candidate-info { flex: 1; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .info-col { display: flex; flex-direction: column; font-size: 14px; min-width: 100px; }
+        .info-col span.label { color: #868e96; font-size: 11px; text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
+        .info-col span.value { font-weight: 500; color: #212529; }
+        
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase; text-align: center; }
+        .status-badge.ok { background: #d4edda; color: #155724; }
+        .status-badge.reprovado { background: #f8d7da; color: #721c24; }
+        .status-badge.standby { background: #fff3cd; color: #856404; }
+        .status-badge.none { background: #e9ecef; color: #495057; }
+
+        .btn-analyze { background: #339af0; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+        .btn-analyze:hover { background: #228be6; }
+
+        /* Detail View */
+        #detail-view { flex: 1; display: none; flex-direction: column; overflow-y: auto; background: #f8f9fa; }
+        .detail-header { padding: 15px 20px; background: #fff; border-bottom: 1px solid #dee2e6; display: flex; align-items: center; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
+        .btn-back { background: #868e96; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-right: 20px; font-weight: bold; }
+        .btn-back:hover { background: #495057; }
+        
+        .detail-wrapper { display: flex; padding: 20px; gap: 20px; align-items: flex-start; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box;}
+        
+        .detail-sidebar { width: 320px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex-shrink: 0; position: sticky; top: 80px;}
+        .detail-sidebar img { width: 100%; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; }
+        .basic-info { border-top: 1px solid #eee; padding-top: 15px; }
+        .basic-info p { margin: 8px 0; font-size: 14px; display: flex; justify-content: space-between;}
+        .basic-info span.label { font-weight: bold; color: #495057; }
+        .basic-info span.value { color: #212529; text-align: right; max-width: 60%; word-break: break-word;}
+        
+        .detail-main { flex: 1; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        .section-title { font-size: 18px; font-weight: bold; color: #1864ab; border-bottom: 2px solid #e7f5ff; padding-bottom: 8px; margin-top: 0; margin-bottom: 20px; }
+        
+        .video-container { width: 100%; margin-bottom: 30px; }
+        .video-container video { width: 100%; max-height: 450px; background: #000; border-radius: 8px; }
+        
+        .qa-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 30px; }
+        .qa-item { background: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #adb5bd; }
+        .qa-question { font-weight: bold; color: #343a40; margin-bottom: 8px; font-size: 14.5px; }
+        .qa-answer { color: #495057; font-size: 14px; white-space: pre-wrap; line-height: 1.5; }
+
+        /* Evaluation Box */
+        .eval-box { background: #e7f5ff; padding: 25px; border-radius: 8px; margin-top: 40px; border: 1px solid #a5d8ff; }
+        .eval-box h3 { margin-top: 0; margin-bottom: 20px; color: #1864ab; font-size: 18px; }
+        
+        .eval-row { display: flex; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; }
+        
+        .eval-group label { display: block; font-weight: bold; margin-bottom: 10px; color: #495057; font-size: 14px; }
+        
+        .btn-group { display: flex; gap: 10px; }
+        .btn-status { padding: 10px 20px; border: 2px solid #ced4da; border-radius: 6px; background: #fff; cursor: pointer; font-weight: bold; color: #495057; transition: all 0.2s; }
+        .btn-status.active-ok { background: #40c057; color: white; border-color: #40c057; }
+        .btn-status.active-reprovado { background: #fa5252; color: white; border-color: #fa5252; }
+        .btn-status.active-standby { background: #fcc419; color: #343a40; border-color: #fcc419; }
+        
+        .score-group { display: flex; gap: 5px; }
+        .btn-score { width: 45px; height: 45px; border: 2px solid #ced4da; border-radius: 6px; background: #fff; cursor: pointer; font-weight: bold; color: #495057; font-size: 16px; transition: all 0.2s; }
+        .btn-score.active { background: #339af0; color: white; border-color: #339af0; }
+        
+        .eval-box textarea { width: 100%; height: 100px; padding: 12px; border: 1px solid #ced4da; border-radius: 6px; resize: vertical; margin-bottom: 20px; box-sizing: border-box; font-family: inherit; font-size: 14px; }
+        
+        .btn-save-eval { background: #1864ab; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; transition: background 0.2s; }
+        .btn-save-eval:hover { background: #14558f; }
+
+        .loading, .empty-state { text-align: center; padding: 50px; color: #868e96; font-size: 16px; }
+        
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">BBR 26 - Admin</div>
+        <ul class="region-list" id="region-list">
+            <li class="loading">Carregando regiões...</li>
+        </ul>
+    </div>
+
+    <div class="main-area">
+        <!-- List View -->
+        <div id="list-view">
+            <div class="list-header">
+                <span id="list-title">Selecione uma região</span>
+                <span id="list-count" style="font-size: 14px; font-weight: normal; color: #868e96;"></span>
+            </div>
+            <div id="candidates-container">
+                <div class="empty-state">Selecione uma região na barra lateral para ver os formulários respondidos.</div>
+            </div>
+        </div>
+
+        <!-- Detail View -->
+        <div id="detail-view">
+            <div class="detail-header">
+                <button class="btn-back" onclick="showListView()">Voltar</button>
+                <h2 style="margin: 0; font-size: 18px; color: #343a40;" id="detail-title">Formulário do Candidato</h2>
+            </div>
+            
+            <div class="detail-wrapper">
+                <!-- Sidebar do Candidato -->
+                <div class="detail-sidebar">
+                    <img id="detail-avatar" src="" alt="Avatar">
+                    <h3 id="detail-nome" style="margin-top: 0; margin-bottom: 5px; color: #1864ab; text-align: center;"></h3>
+                    <p id="detail-nick" style="text-align: center; color: #868e96; margin-top: 0; font-size: 14px; margin-bottom: 20px;"></p>
+                    
+                    <div class="basic-info">
+                        <p><span class="label">Inscrição ID:</span> <span class="value" id="detail-inscricao-id"></span></p>
+                        <p><span class="label">Data de Inscrição:</span> <span class="value" id="detail-data"></span></p>
+                        <p><span class="label">Idade:</span> <span class="value" id="detail-idade"></span></p>
+                        <p><span class="label">Estado/Cidade:</span> <span class="value" id="detail-local"></span></p>
+                        <p><span class="label">E-mail:</span> <span class="value" id="detail-email"></span></p>
+                        <p><span class="label">Discord:</span> <span class="value" id="detail-discord"></span></p>
+                        <p><span class="label">Instagram:</span> <span class="value" id="detail-insta"></span></p>
+                        <p><span class="label">TikTok:</span> <span class="value" id="detail-tiktok"></span></p>
+                    </div>
+                </div>
+
+                <!-- Respostas e Mídia -->
+                <div class="detail-main">
+                    <h2 class="section-title">Mídia: Vídeo de Inscrição</h2>
+                    <div class="video-container">
+                        <video id="detail-video" controls preload="metadata"></video>
+                    </div>
+
+                    <h2 class="section-title">Respostas do Formulário</h2>
+                    <div class="qa-grid" id="detail-qa">
+                        <!-- Perguntas injetadas aqui -->
+                    </div>
+
+                    <!-- Área do Produtor -->
+                    <div class="eval-box">
+                        <h3>Decisão da Produção</h3>
+                        
+                        <div class="eval-row">
+                            <div class="eval-group">
+                                <label>Status (Me escolha):</label>
+                                <div class="btn-group">
+                                    <button class="btn-status" id="btn-ok" onclick="setEvalStatus('OK')">OK</button>
+                                    <button class="btn-status" id="btn-reprovado" onclick="setEvalStatus('REPROVADO')">REPROVADO</button>
+                                    <button class="btn-status" id="btn-standby" onclick="setEvalStatus('STAND BY')">STAND BY</button>
+                                </div>
+                            </div>
+                            
+                            <div class="eval-group">
+                                <label>Nota (1 a 10):</label>
+                                <div class="score-group">
+                                    <button class="btn-score" onclick="setEvalScore(1)">1</button>
+                                    <button class="btn-score" onclick="setEvalScore(2)">2</button>
+                                    <button class="btn-score" onclick="setEvalScore(3)">3</button>
+                                    <button class="btn-score" onclick="setEvalScore(4)">4</button>
+                                    <button class="btn-score" onclick="setEvalScore(5)">5</button>
+                                    <button class="btn-score" onclick="setEvalScore(6)">6</button>
+                                    <button class="btn-score" onclick="setEvalScore(7)">7</button>
+                                    <button class="btn-score" onclick="setEvalScore(8)">8</button>
+                                    <button class="btn-score" onclick="setEvalScore(9)">9</button>
+                                    <button class="btn-score" onclick="setEvalScore(10)">10</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="eval-group">
+                            <label>Observações do Produtor:</label>
+                            <textarea id="eval-obs" placeholder="Escreva aqui anotações sobre o candidato, pontos fortes, fracos, etc..."></textarea>
+                        </div>
+                        
+                        <button class="btn-save-eval" onclick="saveEvaluation()">SALVAR AVALIAÇÃO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRegion = null;
+        let currentCandidateId = null;
+        let currentEvalStatus = null;
+        let currentEvalScore = null;
+        let candidatesData = [];
+
+        // Inicialização
+        async function loadRegions() {
+            try {
+                const res = await fetch('/api/admin/regions');
+                if (!res.ok) throw new Error('Falha ao buscar regiões');
+                const data = await res.json();
+                
+                const list = document.getElementById('region-list');
+                list.innerHTML = '';
+                
+                // Adiciona a opção "Todas"
+                let total = 0;
+                data.regions.forEach(r => total += r.count);
+                
+                list.innerHTML += `<li class="region-item" onclick="selectRegion('Todas', this)">
+                    <span>Todas as Regiões</span>
+                    <span class="badge">${total}</span>
+                </li>`;
+
+                data.regions.forEach(r => {
+                    list.innerHTML += `<li class="region-item" onclick="selectRegion('${r.regiao}', this)">
+                        <span>${r.regiao}</span>
+                        <span class="badge">${r.count}</span>
+                    </li>`;
+                });
+            } catch (e) {
+                document.getElementById('region-list').innerHTML = '<li class="loading">Erro ao carregar regiões. Verifique login.</li>';
+            }
+        }
+
+        async function selectRegion(region, element) {
+            document.querySelectorAll('.region-item').forEach(el => el.classList.remove('active'));
+            if (element) element.classList.add('active');
+            
+            currentRegion = region;
+            document.getElementById('list-title').innerText = `Região: ${region}`;
+            
+            showListView();
+            await loadCandidates(region);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const d = new Date(dateString);
+            return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        }
+
+        function getStatusClass(status) {
+            if (status === 'OK') return 'ok';
+            if (status === 'REPROVADO') return 'reprovado';
+            if (status === 'STAND BY') return 'standby';
+            return 'none';
+        }
+
+        async function loadCandidates(region) {
+            const container = document.getElementById('candidates-container');
+            container.innerHTML = '<div class="loading">Buscando formulários...</div>';
+            
+            try {
+                const res = await fetch(`/api/admin/inscriptions/${region}`);
+                const data = await res.json();
+                candidatesData = data.inscriptions;
+                
+                document.getElementById('list-count').innerText = `${candidatesData.length} formulários`;
+                
+                if (candidatesData.length === 0) {
+                    container.innerHTML = '<div class="empty-state">Nenhum formulário encontrado para esta região.</div>';
+                    return;
+                }
+                
+                let html = '';
+                candidatesData.forEach(c => {
+                    const avatarSrc = c.foto_avatar_path ? (c.foto_avatar_path.startsWith('http') ? c.foto_avatar_path : '/' + c.foto_avatar_path) : 'https://via.placeholder.com/65?text=Sem+Foto';
+                    const statusClass = getStatusClass(c.status_produtor);
+                    const statusText = c.status_produtor && c.status_produtor !== 'Não analisado' ? c.status_produtor : 'Pendente';
+
+                    html += `
+                        <div class="candidate-card">
+                            <img src="${avatarSrc}" alt="Avatar" onerror="this.src='https://via.placeholder.com/65?text=Erro'">
+                            
+                            <div class="candidate-info">
+                                <div class="info-col">
+                                    <span class="label">Data Inscrição</span>
+                                    <span class="value">${formatDate(c.data_envio)}</span>
+                                </div>
+                                <div class="info-col">
+                                    <span class="label">Cód. Inscrição</span>
+                                    <span class="value" style="font-family: monospace;">${c.inscricao_id || 'N/A'}</span>
+                                </div>
+                                <div class="info-col">
+                                    <span class="label">Idade</span>
+                                    <span class="value">${c.idade || '-'}</span>
+                                </div>
+                                <div class="info-col">
+                                    <span class="label">Estado / Cidade</span>
+                                    <span class="value">${c.estado || '-'} / ${c.cidade || '-'}</span>
+                                </div>
+                                <div class="info-col" style="min-width: 80px; text-align: center;">
+                                    <span class="label">Status</span>
+                                    <span class="status-badge ${statusClass}">${statusText}</span>
+                                </div>
+                                <div class="info-col" style="min-width: 60px; text-align: center;">
+                                    <span class="label">Nota</span>
+                                    <span class="value" style="font-size: 16px; font-weight: bold;">${c.nota_produtor || '-'}</span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn-analyze" onclick="openCandidate(${c.id})">Analisar Formulário</button>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+
+            } catch (e) {
+                container.innerHTML = '<div class="loading" style="color: red;">Erro ao carregar os dados.</div>';
+            }
+        }
+
+        // Navegação
+        function showListView() {
+            document.getElementById('list-view').style.display = 'flex';
+            document.getElementById('detail-view').style.display = 'none';
+        }
+
+        function showDetailView() {
+            document.getElementById('list-view').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'flex';
+            // Scroll to top
+            document.getElementById('detail-view').scrollTop = 0;
+        }
+
+        // Detalhes do Candidato
+        function openCandidate(id) {
+            const c = candidatesData.find(x => x.id === id);
+            if (!c) return;
+            
+            currentCandidateId = id;
+            
+            // Popula a sidebar do candidato
+            const avatarSrc = c.foto_avatar_path ? (c.foto_avatar_path.startsWith('http') ? c.foto_avatar_path : '/' + c.foto_avatar_path) : 'https://via.placeholder.com/300?text=Sem+Foto';
+            document.getElementById('detail-avatar').src = avatarSrc;
+            document.getElementById('detail-nome').innerText = c.nome || 'Sem Nome';
+            document.getElementById('detail-nick').innerText = c.nick_roblox ? `@${c.nick_roblox}` : '';
+            
+            document.getElementById('detail-inscricao-id').innerText = c.inscricao_id || '-';
+            document.getElementById('detail-data').innerText = formatDate(c.data_envio);
+            document.getElementById('detail-idade').innerText = c.idade ? `${c.idade} anos` : '-';
+            document.getElementById('detail-local').innerText = `${c.estado || '-'} - ${c.cidade || '-'}`;
+            document.getElementById('detail-email').innerText = c.email || '-';
+            document.getElementById('detail-discord').innerText = c.nick_discord || '-';
+            document.getElementById('detail-insta').innerText = c.instagram || '-';
+            document.getElementById('detail-tiktok').innerText = c.tiktok || '-';
+
+            // Vídeo
+            const videoEl = document.getElementById('detail-video');
+            if (c.video_bbr_path) {
+                const videoSrc = c.video_bbr_path.startsWith('http') ? c.video_bbr_path : '/' + c.video_bbr_path;
+                videoEl.src = videoSrc;
+                videoEl.style.display = 'block';
+            } else {
+                videoEl.style.display = 'none';
+            }
+
+            // Q&A
+            const qaContainer = document.getElementById('detail-qa');
+            const questions = [
+                { q: "Como gostaria de ser chamado?", a: c.como_chamar },
+                { q: "Orientação Sexual", a: c.orientacao },
+                { q: "VoiceChat no Roblox?", a: c.voicechat },
+                { q: "Jogos favoritos do Roblox", a: c.jogos_fav },
+                { q: "Já participou de reality no Roblox?", a: c.ja_participou_reality },
+                { q: "Quais realities?", a: c.quais_realities },
+                { q: "Exposição no Roblox?", a: c.exposicao_roblox },
+                { q: "Detalhes da Exposição", a: c.exposicao_detalhes },
+                { q: "Influente em alguma comunidade?", a: c.influente_comunidade },
+                { q: "Como lida com exposição/críticas?", a: c.lida_exposicao_criticas },
+                { q: "Envolveu-se em polêmica?", a: c.envolveu_polemica },
+                { q: "Detalhes da polêmica", a: c.polemica_detalhes },
+                { q: "O que te tira do sério?", a: c.tira_do_serio },
+                { q: "Mania ou esquisitice", a: c.mania_esquisitice },
+                { q: "Como reage sob pressão?", a: c.reage_pressao },
+                { q: "Explosivo ou controlado?", a: c.explosivo_controlado },
+                { q: "O que irrita em convivência?", a: c.irrita_convivencia },
+                { q: "Pessoa competitiva?", a: c.pessoa_competitiva },
+                { q: "Resumo da história", a: c.resumo_historia },
+                { q: "Motivo para participar", a: c.motivo_participar },
+                { q: "Por que vai ser legal te assistir?", a: c.por_que_assistir },
+                { q: "O que faria com o prêmio?", a: c.o_que_faria_premio },
+                { q: "Sozinho ou em grupo?", a: c.jogar_sozinho_grupo },
+            ];
+
+            let qaHtml = '';
+            questions.forEach(item => {
+                if (item.a && String(item.a).trim() !== '') {
+                    qaHtml += `
+                        <div class="qa-item">
+                            <div class="qa-question">${item.q}</div>
+                            <div class="qa-answer">${String(item.a).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+                        </div>
+                    `;
+                }
+            });
+            qaContainer.innerHTML = qaHtml || '<p>Nenhuma resposta registrada.</p>';
+
+            // Área de Avaliação
+            setEvalStatus(c.status_produtor);
+            setEvalScore(c.nota_produtor);
+            document.getElementById('eval-obs').value = c.obs_produtor || '';
+
+            showDetailView();
+        }
+
+        // Sistema de Avaliação
+        function setEvalStatus(status) {
+            currentEvalStatus = status;
+            document.querySelectorAll('.btn-status').forEach(b => {
+                b.classList.remove('active-ok', 'active-reprovado', 'active-standby');
+            });
+            
+            if (status === 'OK') document.getElementById('btn-ok').classList.add('active-ok');
+            if (status === 'REPROVADO') document.getElementById('btn-reprovado').classList.add('active-reprovado');
+            if (status === 'STAND BY') document.getElementById('btn-standby').classList.add('active-standby');
+        }
+
+        function setEvalScore(score) {
+            currentEvalScore = score;
+            document.querySelectorAll('.btn-score').forEach(b => b.classList.remove('active'));
+            if (score) {
+                const btn = Array.from(document.querySelectorAll('.btn-score')).find(b => parseInt(b.innerText) === parseInt(score));
+                if (btn) btn.classList.add('active');
+            }
+        }
+
+        async function saveEvaluation() {
+            const obs = document.getElementById('eval-obs').value;
+            
+            const payload = {
+                status_produtor: currentEvalStatus,
+                nota_produtor: currentEvalScore,
+                obs_produtor: obs
+            };
+
+            const btn = document.querySelector('.btn-save-eval');
+            const originalText = btn.innerText;
+            btn.innerText = 'SALVANDO...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/admin/inscriptions/${currentCandidateId}/evaluate`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!res.ok) throw new Error('Falha ao salvar');
+                
+                // Atualiza dados locais e a lista
+                const c = candidatesData.find(x => x.id === currentCandidateId);
+                if (c) {
+                    c.status_produtor = currentEvalStatus;
+                    c.nota_produtor = currentEvalScore;
+                    c.obs_produtor = obs;
+                }
+                
+                alert('Avaliação salva com sucesso!');
+                btn.innerText = originalText;
+                btn.disabled = false;
+                
+                // Recarrega a lista para mostrar os status atualizados
+                if(currentRegion) loadCandidates(currentRegion);
+                
+            } catch (e) {
+                alert('Erro ao salvar avaliação.');
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Start
+        loadRegions();
+    </script>
+</body>
+</html>
