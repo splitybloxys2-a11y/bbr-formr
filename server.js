@@ -92,6 +92,18 @@ try { db.exec("ALTER TABLE inscricoes ADD COLUMN status_produtor TEXT DEFAULT 'N
 try { db.exec("ALTER TABLE inscricoes ADD COLUMN nota_produtor INTEGER;"); } catch(e) {}
 try { db.exec("ALTER TABLE inscricoes ADD COLUMN obs_produtor TEXT;"); } catch(e) {}
 
+// Criar tabela de configuração de regiões
+db.prepare(`CREATE TABLE IF NOT EXISTS config_regioes (
+    regiao TEXT PRIMARY KEY,
+    status TEXT
+)`).run();
+
+// Popula as regiões por padrão como ABERTO se não existirem
+const regioes_default = ['SUDESTE', 'SUL', 'CENTRO-OESTE', 'NORDESTE', 'NORTE'];
+const stmtConfig = db.prepare('INSERT OR IGNORE INTO config_regioes (regiao, status) VALUES (?, ?)');
+regioes_default.forEach(r => stmtConfig.run(r, 'ABERTO'));
+
+
 // === MIDDLEWARE DE AUTENTICAÇÃO (ADMIN) ===
 const basicAuth = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -248,6 +260,27 @@ app.put('/api/admin/inscriptions/:id/evaluate', basicAuth, (req, res) => {
     try {
         const stmt = db.prepare("UPDATE inscricoes SET status_produtor = ?, nota_produtor = ?, obs_produtor = ? WHERE id = ?");
         stmt.run(status_produtor, nota_produtor, obs_produtor, id);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 7. Obter configurações das regiões (público)
+app.get('/api/config/regions', (req, res) => {
+    try {
+        const rows = db.prepare("SELECT regiao, status FROM config_regioes").all();
+        res.json({ config: rows });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 8. Atualizar status da região (admin)
+app.post('/api/admin/config/regions', basicAuth, (req, res) => {
+    const { regiao, status } = req.body;
+    try {
+        db.prepare("UPDATE config_regioes SET status = ? WHERE regiao = ?").run(status, regiao);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

@@ -102,9 +102,26 @@
         <ul class="region-list" id="region-list">
             <li class="loading">Carregando regiões...</li>
         </ul>
+        <div style="padding: 15px; border-top: 1px solid #dee2e6;">
+            <button onclick="showConfigView()" style="width: 100%; padding: 10px; background: #343a40; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;">⚙️ Configurações</button>
+        </div>
     </div>
 
     <div class="main-area">
+        <!-- Config View -->
+        <div id="config-view" style="display: none; padding: 20px; overflow-y: auto;">
+            <div class="list-header">
+                <span>Configurações do Site</span>
+            </div>
+            <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); max-width: 600px;">
+                <h3 style="margin-top: 0; color: #1864ab;">Status das Inscrições</h3>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Abra ou feche as inscrições para cada região do Brasil. Quando fechado, a imagem correspondente no formulário será alterada e os candidatos não poderão mais se inscrever naquela região.</p>
+                <div id="config-regions-container">
+                    <p class="loading">Carregando configurações...</p>
+                </div>
+            </div>
+        </div>
+
         <!-- List View -->
         <div id="list-view">
             <div class="list-header">
@@ -327,10 +344,12 @@
         function showListView() {
             document.getElementById('list-view').style.display = 'flex';
             document.getElementById('detail-view').style.display = 'none';
+            document.getElementById('config-view').style.display = 'none';
         }
 
         function showDetailView() {
             document.getElementById('list-view').style.display = 'none';
+            document.getElementById('config-view').style.display = 'none';
             document.getElementById('detail-view').style.display = 'flex';
             // Scroll to top
             document.getElementById('detail-view').scrollTop = 0;
@@ -380,15 +399,17 @@
                 { q: "Exposição no Roblox?", a: c.exposicao_roblox },
                 { q: "Detalhes da Exposição", a: c.exposicao_detalhes },
                 { q: "Influente em alguma comunidade?", a: c.influente_comunidade },
-                { q: "Como lida com exposição/críticas?", a: c.lida_exposicao_criticas },
+                { q: "Explique em qual comunidade e por quê", a: c.influente_detalhes },
                 { q: "Envolveu-se em polêmica?", a: c.envolveu_polemica },
                 { q: "Detalhes da polêmica", a: c.polemica_detalhes },
+                { q: "Como lida com exposição/críticas?", a: c.lida_exposicao_criticas },
                 { q: "O que te tira do sério?", a: c.tira_do_serio },
                 { q: "Mania ou esquisitice", a: c.mania_esquisitice },
                 { q: "Como reage sob pressão?", a: c.reage_pressao },
                 { q: "Explosivo ou controlado?", a: c.explosivo_controlado },
                 { q: "O que irrita em convivência?", a: c.irrita_convivencia },
                 { q: "Pessoa competitiva?", a: c.pessoa_competitiva },
+                { q: "Até que ponto vai para ganhar?", a: c.ponto_ganhar },
                 { q: "Resumo da história", a: c.resumo_historia },
                 { q: "Motivo para participar", a: c.motivo_participar },
                 { q: "Por que vai ser legal te assistir?", a: c.por_que_assistir },
@@ -480,6 +501,59 @@
                 alert('Erro ao salvar avaliação.');
                 btn.innerText = originalText;
                 btn.disabled = false;
+            }
+        }
+
+        // --- Configurações ---
+        async function showConfigView() {
+            document.querySelectorAll('.region-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('list-view').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'none';
+            document.getElementById('config-view').style.display = 'block';
+            
+            await loadConfig();
+        }
+
+        async function loadConfig() {
+            const container = document.getElementById('config-regions-container');
+            container.innerHTML = '<p class="loading">Carregando...</p>';
+            
+            try {
+                const res = await fetch('/api/config/regions');
+                if (!res.ok) throw new Error('Falha ao carregar configurações');
+                const data = await res.json();
+                
+                let html = '';
+                data.config.forEach(c => {
+                    const isOpen = c.status === 'ABERTO';
+                    html += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee;">
+                            <span style="font-weight: bold; font-size: 16px;">${c.regiao}</span>
+                            <div style="display: flex; gap: 10px;">
+                                <button onclick="saveConfig('${c.regiao}', 'ABERTO')" style="padding: 6px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; border: 2px solid #40c057; background: ${isOpen ? '#40c057' : '#fff'}; color: ${isOpen ? '#fff' : '#40c057'};">ABERTAS</button>
+                                <button onclick="saveConfig('${c.regiao}', 'FECHADO')" style="padding: 6px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; border: 2px solid #fa5252; background: ${!isOpen ? '#fa5252' : '#fff'}; color: ${!isOpen ? '#fff' : '#fa5252'};">ENCERRADAS</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+                
+            } catch (e) {
+                container.innerHTML = '<p style="color: red;">Erro ao carregar configurações.</p>';
+            }
+        }
+
+        async function saveConfig(regiao, status) {
+            try {
+                const res = await fetch('/api/admin/config/regions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ regiao, status })
+                });
+                if (!res.ok) throw new Error('Falha ao atualizar');
+                await loadConfig(); // Recarrega a view de config para refletir a mudança
+            } catch (e) {
+                alert('Erro ao atualizar status da região.');
             }
         }
 
