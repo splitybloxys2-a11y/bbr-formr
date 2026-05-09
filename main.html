@@ -1416,8 +1416,23 @@
             // Mostrar Preview Imediatamente
             const videoURL = URL.createObjectURL(file);
             previewVideo.src = videoURL;
+            previewVideo.load();
             previewVideo.style.display = 'block';
             previewContainer.style.display = 'block';
+
+            // Capturar erro de codec/reprodução
+            previewVideo.onerror = function() {
+                console.warn("Preview indisponível para este vídeo.");
+                const infoMsg = document.createElement('p');
+                infoMsg.id = "video_info_msg";
+                infoMsg.style.fontSize = "12px";
+                infoMsg.style.color = "#666";
+                infoMsg.innerText = "ℹ️ Preview indisponível para este vídeo (codec incompatível), mas o arquivo será enviado normalmente.";
+                if (!document.getElementById('video_info_msg')) {
+                    previewContainer.appendChild(infoMsg);
+                }
+                previewVideo.style.display = 'none';
+            };
 
             // Simulador visual de Barra de Progresso do Upload
             progressContainer.style.display = 'block';
@@ -1448,6 +1463,14 @@
                             progressText.style.color = 'green';
                         }
                     };
+
+                    // Caso o vídeo não carregue os metadados (erro de codec grave)
+                    setTimeout(() => {
+                        if (progressText.innerText === 'Upload concluído e processando metadados...') {
+                            progressText.innerText = 'Upload concluído! (Duração não validada)';
+                            progressText.style.color = 'orange';
+                        }
+                    }, 3000);
                 }
             }, 200);
         }
@@ -1457,6 +1480,9 @@
             document.getElementById('preview_video_container').style.display = 'none';
             document.getElementById('erro_video').style.display = 'none';
             document.getElementById('progress_container').style.display = 'none';
+
+            const infoMsg = document.getElementById('video_info_msg');
+            if (infoMsg) infoMsg.remove();
 
             const videoElement = document.getElementById('preview_video');
             videoElement.pause();
