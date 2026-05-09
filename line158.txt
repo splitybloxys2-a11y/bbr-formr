@@ -1,0 +1,1 @@
+﻿            data.tira_do_serio, data.mania_esquisitice, data.reage_pressao, data.explosivo_controlado, data.irrita_convivencia, data.pessoa_competitiva, data.ponto_ganhar, data.resumo_historia, data.motivo_participar, data.por_que_assistir, data.o_que_faria_premio, data.jogar_sozinho_grupo,
