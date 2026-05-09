@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Big Brother Roblox 2026: Inscrições</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         /* Estilos Gerais */
         body {
@@ -1251,6 +1252,11 @@
                     </label>
                 </div>
 
+                <!-- Cloudflare Turnstile CAPTCHA -->
+                <div id="turnstile-container" style="margin: 15px 0;">
+                    <div class="cf-turnstile" data-sitekey="0x4AAAAAADMFCu2cZP6nSzmN"></div>
+                </div>
+
                 <div class="form-actions">
                     <button type="button" class="btn-salvar" onclick="goToStep(6)">VOLTAR</button>
                     <button type="submit" class="btn-proximo" style="background-color: #28a745;">FINALIZAR
@@ -1464,6 +1470,13 @@
                 return;
             }
 
+            // Verificação do Cloudflare Turnstile
+            const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]').value;
+            if (!turnstileResponse) {
+                alert("Por favor, complete a verificação para confirmar que você não é um robô.");
+                return;
+            }
+
             // Se chegou aqui, os arquivos passaram por toda validação nos onchange.
             finalizar();
         }
@@ -1550,6 +1563,7 @@
                 // Pegar o ID e a Região
                 formData.append('inscricao_id', localStorage.getItem('bbb_inscricao_id') || 'DESCONHECIDO');
                 formData.append('regiao', localStorage.getItem('bbb_regiao') || 'NÃO INFORMADO');
+                formData.append('turnstile_response', document.querySelector('[name="cf-turnstile-response"]').value);
 
                 // Pegar todos os inputs e textareas do form
                 const inputs = document.querySelectorAll('input:not([type="file"]), select, textarea');

@@ -137,26 +137,48 @@ app.get('/castitreach', basicAuth, (req, res) => {
 
 // === ROTAS DO FORMULÁRIO PÚBLICO ===
 const cpUpload = upload.fields([{ name: 'foto_avatar', maxCount: 1 }, { name: 'video_bbr', maxCount: 1 }]);
-app.post('/submit', cpUpload, (req, res) => {
+app.post('/submit', cpUpload, async (req, res) => {
     try {
         const data = req.body;
+
+        // Validar Cloudflare Turnstile
+        const secretKey = process.env.TURNSTILE_SECRET_KEY;
+        const token = data.turnstile_response;
+
+        const verifyResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `secret=${secretKey}&response=${token}`
+        });
+
+        const verifyData = await verifyResponse.json();
+
+        if (!verifyData.success) {
+            return res.status(403).json({ error: 'Falha na verificação do captcha.' });
+        }
+
         const foto_avatar_path = req.files && req.files['foto_avatar'] ? req.files['foto_avatar'][0].path.replace(/\\/g, '/') : null;
         const video_bbr_path = req.files && req.files['video_bbr'] ? req.files['video_bbr'][0].path.replace(/\\/g, '/') : null;
+
+        // Gerar data de envio no horário de Brasília (UTC-3)
+        const now = new Date();
+        const brasiliaTime = new Date(now.getTime() - (3 * 60 * 60 * 1000));
+        const data_envio = brasiliaTime.toISOString().replace('T', ' ').substring(0, 19);
 
         const stmt = db.prepare(`INSERT INTO inscricoes (
             inscricao_id, regiao, nome, sexo, nascimento, idade, email, cidade, estado,
             nick_roblox, nick_discord, como_chamar, orientacao, jogos_fav, voicechat,
             ja_participou_reality, quais_realities, exposicao_roblox, exposicao_detalhes, influente_comunidade, influente_detalhes, envolveu_polemica, polemica_detalhes, lida_exposicao_criticas,
             tira_do_serio, mania_esquisitice, reage_pressao, explosivo_controlado, irrita_convivencia, pessoa_competitiva, ponto_ganhar, resumo_historia, motivo_participar, por_que_assistir, o_que_faria_premio, jogar_sozinho_grupo,
-            instagram, twitter, tiktok, foto_avatar_path, video_bbr_path
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+            instagram, twitter, tiktok, foto_avatar_path, video_bbr_path, data_envio
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
 
         const info = stmt.run(
             data.inscricao_id, data.regiao, data.nome, data.sexo, data.nascimento, data.idade, data.email, data.cidade, data.estado,
             data.nick_roblox, data.nick_discord, data.como_chamar, data.orientacao, data.jogos_fav, data.voicechat,
             data.ja_participou_reality, data.quais_realities, data.exposicao_roblox, data.exposicao_detalhes, data.influente_comunidade, data.influente_detalhes, data.envolveu_polemica, data.polemica_detalhes, data.lida_exposicao_criticas,
             data.tira_do_serio, data.mania_esquisitice, data.reage_pressao, data.explosivo_controlado, data.irrita_convivencia, data.pessoa_competitiva, data.ponto_ganhar, data.resumo_historia, data.motivo_participar, data.por_que_assistir, data.o_que_faria_premio, data.jogar_sozinho_grupo,
-            data.instagram, data.twitter, data.tiktok, foto_avatar_path, video_bbr_path
+            data.instagram, data.twitter, data.tiktok, foto_avatar_path, video_bbr_path, data_envio
         );
 
         res.status(200).json({ success: true, message: 'Inscrição salva com sucesso!', id: info.lastInsertRowid });
