@@ -20,8 +20,8 @@
         .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
         /* List View */
-        #list-view { flex: 1; padding: 20px; overflow-y: auto; }
-        .list-header { font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #495057; display: flex; justify-content: space-between; align-items: center;}
+        #list-view { flex: 1; display: flex; flex-direction: column; background: #f8f9fa; }
+        .list-header { display: none; } /* Removido para usar a top-bar */
         
         .candidate-card { display: flex; background: #fff; padding: 15px; margin-bottom: 12px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); align-items: center; border: 1px solid #e9ecef; transition: box-shadow 0.2s; }
         .candidate-card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
@@ -41,11 +41,47 @@
         .btn-analyze { background: #339af0; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
         .btn-analyze:hover { background: #228be6; }
 
-        /* Detail View */
-        #detail-view { flex: 1; display: none; flex-direction: column; overflow-y: auto; background: #f8f9fa; }
-        .detail-header { padding: 15px 20px; background: #fff; border-bottom: 1px solid #dee2e6; display: flex; align-items: center; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
-        .btn-back { background: #868e96; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-right: 20px; font-weight: bold; }
-        .btn-back:hover { background: #495057; }
+        /* Unified Top Bar */
+        .top-bar { 
+            background: #fff; 
+            padding: 15px 25px; 
+            border-bottom: 1px solid #dee2e6; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .top-bar-title { display: flex; flex-direction: column; }
+        .top-bar-title h2 { margin: 0; font-size: 18px; color: #1864ab; }
+        .top-bar-title span { font-size: 12px; color: #868e96; }
+        
+        .top-bar-actions { display: flex; gap: 10px; flex: 1; justify-content: flex-end; align-items: center; }
+        .search-wrapper { position: relative; flex: 0 1 400px; }
+        .search-wrapper input { 
+            width: 100%; 
+            padding: 10px 15px; 
+            border: 1px solid #dee2e6; 
+            border-radius: 6px; 
+            font-size: 14px; 
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-wrapper input:focus { border-color: #339af0; box-shadow: 0 0 0 3px rgba(51, 154, 240, 0.1); }
+        
+        .filter-select { 
+            padding: 10px 15px; 
+            border: 1px solid #dee2e6; 
+            border-radius: 6px; 
+            background: #fff; 
+            font-size: 14px; 
+            cursor: pointer;
+            outline: none;
+        }
+        .filter-select:focus { border-color: #339af0; }
         
         .detail-wrapper { display: flex; padding: 20px; gap: 20px; align-items: flex-start; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box;}
         
@@ -123,25 +159,31 @@
         </div>
 
         <!-- List View -->
-        <div id="list-view">
-            <div class="list-header">
-                <span id="list-title">Selecione uma região</span>
-                <span id="list-count" style="font-size: 14px; font-weight: normal; color: #868e96;"></span>
-            </div>
-            
-            <div id="filter-bar" style="display: none; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                <input type="text" id="search-candidate" placeholder="Pesquisar por Nome, ID ou Nick..." style="flex: 1; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;" oninput="filterCandidates()">
-                <select id="filter-status" style="padding: 10px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px; background: white;" onchange="filterCandidates()">
-                    <option value="">Todos os Status</option>
-                    <option value="OK">Aprovado (OK)</option>
-                    <option value="REPROVADO">Reprovado</option>
-                    <option value="STAND BY">Stand By</option>
-                    <option value="Não analisado">Não analisado</option>
-                </select>
+        <div id="list-view" style="padding: 0;">
+            <div class="top-bar">
+                <div class="top-bar-title">
+                    <h2 id="list-title">Selecione uma região</h2>
+                    <span id="list-count"></span>
+                </div>
+                
+                <div id="filter-bar" class="top-bar-actions" style="display: none;">
+                    <div class="search-wrapper">
+                        <input type="text" id="search-candidate" placeholder="Pesquisar por Nome, ID ou Nick..." oninput="filterCandidates()">
+                    </div>
+                    <select id="filter-status" class="filter-select" onchange="filterCandidates()">
+                        <option value="">Todos os Status</option>
+                        <option value="OK">Aprovado (OK)</option>
+                        <option value="REPROVADO">Reprovado</option>
+                        <option value="STAND BY">Stand By</option>
+                        <option value="Não analisado">Não analisado</option>
+                    </select>
+                </div>
             </div>
 
-            <div id="candidates-container">
-                <div class="empty-state">Selecione uma região na barra lateral para ver os formulários respondidos.</div>
+            <div style="padding: 20px;">
+                <div id="candidates-container">
+                    <div class="empty-state">Selecione uma região na barra lateral para ver os formulários respondidos.</div>
+                </div>
             </div>
         </div>
 
@@ -162,8 +204,12 @@
                     <div class="basic-info">
                         <p><span class="label">Inscrição ID:</span> <span class="value" id="detail-inscricao-id"></span></p>
                         <p><span class="label">Data de Inscrição:</span> <span class="value" id="detail-data"></span></p>
+                        <p><span class="label">Sexo:</span> <span class="value" id="detail-sexo"></span></p>
+                        <p><span class="label">Nascimento:</span> <span class="value" id="detail-nascimento"></span></p>
                         <p><span class="label">Idade:</span> <span class="value" id="detail-idade"></span></p>
                         <p><span class="label">Estado/Cidade:</span> <span class="value" id="detail-local"></span></p>
+                        <p><span class="label">Roblox Nick:</span> <span class="value" id="detail-roblox-nick"></span></p>
+                        <p><span class="label">Twitter:</span> <span class="value" id="detail-twitter"></span></p>
                         <p><span class="label">E-mail:</span> <span class="value" id="detail-email"></span></p>
                         <p><span class="label">Discord:</span> <span class="value" id="detail-discord"></span></p>
                         <p><span class="label">Instagram:</span> <span class="value" id="detail-insta"></span></p>
@@ -440,8 +486,12 @@
             
             document.getElementById('detail-inscricao-id').innerText = c.inscricao_id || '-';
             document.getElementById('detail-data').innerText = formatDate(c.data_envio);
+            document.getElementById('detail-sexo').innerText = c.sexo || '-';
+            document.getElementById('detail-nascimento').innerText = c.nascimento || '-';
             document.getElementById('detail-idade').innerText = c.idade ? `${c.idade} anos` : '-';
             document.getElementById('detail-local').innerText = `${c.estado || '-'} - ${c.cidade || '-'}`;
+            document.getElementById('detail-roblox-nick').innerText = c.nick_roblox || '-';
+            document.getElementById('detail-twitter').innerText = c.twitter || '-';
             document.getElementById('detail-email').innerText = c.email || '-';
             document.getElementById('detail-discord').innerText = c.nick_discord || '-';
             document.getElementById('detail-insta').innerText = c.instagram || '-';
