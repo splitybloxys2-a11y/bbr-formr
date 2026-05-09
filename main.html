@@ -1231,7 +1231,7 @@
 
                             <div id="preview_video_container" style="display: none; margin-top: 15px;">
                                 <p style="font-size: 13px; font-weight: bold; margin: 0 0 5px 0;">Preview do Vídeo:</p>
-                                <video id="preview_video" controls
+                                <video id="preview_video" controls preload="auto" playsinline
                                     style="max-width: 100%; max-height: 250px; border: 1px solid #ccc; border-radius: 5px; background: #000;"></video>
                                 <br>
                                 <button type="button" onclick="removerVideo()"
@@ -1414,11 +1414,19 @@
             }
 
             // Mostrar Preview Imediatamente
+            if (previewVideo.src && previewVideo.src.startsWith('blob:')) {
+                URL.revokeObjectURL(previewVideo.src);
+            }
+            
             const videoURL = URL.createObjectURL(file);
+            
+            // Resetar o elemento de vídeo para garantir que ele carregue o novo arquivo
+            previewVideo.pause();
             previewVideo.src = videoURL;
+            previewVideo.load();
+            
             previewVideo.style.display = 'block';
             previewContainer.style.display = 'block';
-            previewVideo.load();
 
             // Simulador visual de Barra de Progresso do Upload
             progressContainer.style.display = 'block';
