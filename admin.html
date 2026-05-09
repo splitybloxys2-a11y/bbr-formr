@@ -236,7 +236,7 @@
         // Inicialização
         async function loadRegions() {
             try {
-                const res = await fetch('/api/admin/regions');
+                const res = await fetch('/api/admin/regions', { cache: 'no-store' });
                 if (!res.ok) throw new Error('Falha ao buscar regiões');
                 const data = await res.json();
                 
@@ -292,7 +292,8 @@
             container.innerHTML = '<div class="loading">Buscando formulários...</div>';
             
             try {
-                const res = await fetch(`/api/admin/inscriptions/${region}`);
+                const res = await fetch(`/api/admin/inscriptions/${region}`, { cache: 'no-store' });
+                if (!res.ok) throw new Error('Falha ao buscar candidatos');
                 const data = await res.json();
                 candidatesData = data.inscriptions;
                 
@@ -355,6 +356,10 @@
                             <div class="info-col">
                                 <span class="label">Cód. Inscrição</span>
                                 <span class="value" style="font-family: monospace;">${c.inscricao_id || 'N/A'}</span>
+                            </div>
+                            <div class="info-col">
+                                <span class="label">Região</span>
+                                <span class="value" style="font-weight: bold; color: #4da8f8;">${c.regiao || '-'}</span>
                             </div>
                             <div class="info-col">
                                 <span class="label">Nome</span>

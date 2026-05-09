@@ -1390,6 +1390,8 @@
             errorDiv.style.display = 'none';
             previewContainer.style.display = 'none';
             progressContainer.style.display = 'none';
+            previewVideo.removeAttribute('src');
+            previewVideo.load();
 
             if (!file) return;
 
@@ -1411,13 +1413,20 @@
                 return;
             }
 
+            // Mostrar Preview Imediatamente
+            const videoURL = URL.createObjectURL(file);
+            previewVideo.src = videoURL;
+            previewVideo.style.display = 'block';
+            previewContainer.style.display = 'block';
+
             // Simulador visual de Barra de Progresso do Upload
             progressContainer.style.display = 'block';
+            progressText.style.color = '#333';
             let progresso = 0;
             progressBar.style.width = '0%';
 
             const intervalo = setInterval(() => {
-                progresso += Math.floor(Math.random() * 15) + 5; // incrementa randomicamente para parecer real
+                progresso += Math.floor(Math.random() * 15) + 5;
                 if (progresso >= 100) progresso = 100;
 
                 progressBar.style.width = progresso + '%';
@@ -1427,26 +1436,20 @@
                     clearInterval(intervalo);
                     progressText.innerText = 'Upload concluído e processando metadados...';
 
-                    // Concluído a barra, agora valida duração através do Preview
-                    const videoURL = URL.createObjectURL(file);
-                    previewVideo.src = videoURL;
-
+                    // Valida duração através do Preview
                     previewVideo.onloadedmetadata = function () {
                         const duration = previewVideo.duration;
-
                         if (duration < 30 || duration > 120) {
                             errorDiv.innerText = `⚠️ O vídeo deve ter no mínimo 30 segundos e no máximo 2 minutos. (Duração atual: ${Math.round(duration)} segundos)`;
                             errorDiv.style.display = 'block';
-                            event.target.value = ''; // Limpa input
-                            progressContainer.style.display = 'none';
+                            removerVideo();
                         } else {
                             progressText.innerText = 'Vídeo validado com sucesso!';
                             progressText.style.color = 'green';
-                            previewContainer.style.display = 'block';
                         }
                     };
                 }
-            }, 200); // Velocidade do fake upload
+            }, 200);
         }
 
         function removerVideo() {
