@@ -143,7 +143,11 @@ app.post('/submit', cpUpload, async (req, res) => {
 
         // Validar Cloudflare Turnstile
         const secretKey = process.env.TURNSTILE_SECRET_KEY;
-        const token = data.turnstile_response;
+        const token = data['cf-turnstile-response'];
+
+        if (!token) {
+            return res.status(403).json({ error: 'Token do captcha ausente.' });
+        }
 
         const verifyResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
             method: 'POST',
@@ -154,7 +158,11 @@ app.post('/submit', cpUpload, async (req, res) => {
         const verifyData = await verifyResponse.json();
 
         if (!verifyData.success) {
-            return res.status(403).json({ error: 'Falha na verificação do captcha.' });
+            console.error("Erro no Turnstile:", verifyData);
+            return res.status(403).json({ 
+                error: 'Falha na verificação do captcha.', 
+                details: verifyData['error-codes'] 
+            });
         }
 
         const foto_avatar_path = req.files && req.files['foto_avatar'] ? req.files['foto_avatar'][0].path.replace(/\\/g, '/') : null;

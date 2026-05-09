@@ -1564,7 +1564,16 @@
                 // Pegar o ID e a Região
                 formData.append('inscricao_id', localStorage.getItem('bbb_inscricao_id') || 'DESCONHECIDO');
                 formData.append('regiao', localStorage.getItem('bbb_regiao') || 'NÃO INFORMADO');
-                formData.append('turnstile_response', document.querySelector('[name="cf-turnstile-response"]').value);
+
+                // Verificação extra do CAPTCHA
+                const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value;
+                if (!turnstileToken) {
+                    alert('Confirme o captcha antes de enviar.');
+                    btnSubmit.innerText = originalText;
+                    btnSubmit.disabled = false;
+                    return;
+                }
+                formData.append('cf-turnstile-response', turnstileToken);
 
                 // Pegar todos os inputs e textareas do form
                 const inputs = document.querySelectorAll('input:not([type="file"]), select, textarea');
