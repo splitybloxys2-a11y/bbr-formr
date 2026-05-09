@@ -1228,16 +1228,6 @@
                                     style="font-size: 12px; margin-top: 5px; color: #333; font-weight: bold;">
                                     Enviando... 0%</div>
                             </div>
-
-                            <div id="preview_video_container" style="display: none; margin-top: 15px;">
-                                <p style="font-size: 13px; font-weight: bold; margin: 0 0 5px 0;">Preview do Vídeo:</p>
-                                <video id="preview_video" controls preload="metadata"
-                                    style="max-width: 100%; max-height: 250px; border: 1px solid #ccc; border-radius: 5px; background: #000;"></video>
-                                <br>
-                                <button type="button" onclick="removerVideo()"
-                                    style="margin-top: 10px; background: none; border: 1px solid red; color: red; padding: 5px 10px; cursor: pointer; border-radius: 3px; font-size: 12px;">Remover
-                                    / Substituir Vídeo</button>
-                            </div>
                         </div>
 
                     </div>
@@ -1380,24 +1370,19 @@
         function handleVideoUpload(event) {
             const file = event.target.files[0];
             const errorDiv = document.getElementById('erro_video');
-            const previewContainer = document.getElementById('preview_video_container');
-            const previewVideo = document.getElementById('preview_video');
             const progressContainer = document.getElementById('progress_container');
             const progressBar = document.getElementById('progress_bar');
             const progressText = document.getElementById('progress_text');
 
             // Reset UI
             errorDiv.style.display = 'none';
-            previewContainer.style.display = 'none';
             progressContainer.style.display = 'none';
-            previewVideo.removeAttribute('src');
-            previewVideo.load();
 
             if (!file) return;
 
             // Valida tipo
             const validTypes = ['video/mp4', 'video/quicktime'];
-            if (!validTypes.includes(file.type)) {
+            if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.mp4') && !file.name.toLowerCase().endsWith('.mov')) {
                 errorDiv.innerText = '⚠️ Formato inválido! Envie apenas vídeos MP4 ou MOV.';
                 errorDiv.style.display = 'block';
                 event.target.value = '';
@@ -1412,16 +1397,6 @@
                 event.target.value = '';
                 return;
             }
-
-            // Mostrar Preview Imediatamente
-            if (previewVideo.src && previewVideo.src.startsWith('blob:')) {
-                URL.revokeObjectURL(previewVideo.src);
-            }
-            
-            const videoURL = URL.createObjectURL(file);
-            previewVideo.src = videoURL;
-            previewVideo.style.display = 'block';
-            previewContainer.style.display = 'block';
 
             // Simulador visual de Barra de Progresso do Upload
             progressContainer.style.display = 'block';
@@ -1442,21 +1417,6 @@
                     progressText.style.color = 'green';
                 }
             }, 200);
-        }
-
-        function removerVideo() {
-            document.getElementById('video_bbr').value = '';
-            document.getElementById('preview_video_container').style.display = 'none';
-            document.getElementById('erro_video').style.display = 'none';
-            document.getElementById('progress_container').style.display = 'none';
-
-            const infoMsg = document.getElementById('video_info_msg');
-            if (infoMsg) infoMsg.remove();
-
-            const videoElement = document.getElementById('preview_video');
-            videoElement.pause();
-            videoElement.removeAttribute('src');
-            videoElement.load();
         }
 
         function validarMidiasEFinalizar() {
