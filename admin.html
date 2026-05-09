@@ -107,6 +107,37 @@
         
         .video-container { width: 100%; margin-bottom: 30px; }
         .video-container video { width: 100%; max-height: 450px; background: #000; border-radius: 8px; }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            body { flex-direction: column; height: auto; overflow: auto; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #dee2e6; height: auto; max-height: 300px; overflow-y: auto; }
+            .main-area { height: auto; overflow: visible; }
+            .detail-wrapper { flex-direction: column; padding: 10px; }
+            .detail-sidebar { width: 100%; position: static; margin-bottom: 20px; }
+            .top-bar { flex-direction: column; align-items: stretch; gap: 10px; padding: 10px 15px; }
+            .top-bar-actions { flex-direction: column; width: 100%; }
+            .search-wrapper { flex: none; width: 100%; }
+            .filter-select { width: 100%; }
+            #list-view { height: auto; }
+            .candidates-list-wrapper { padding: 10px; }
+        }
+
+        @media (max-width: 600px) {
+            .sidebar-header { padding: 10px; font-size: 16px; }
+            .region-item { padding: 10px 15px; font-size: 14px; }
+            .candidate-card { flex-direction: column; padding: 20px; gap: 15px; text-align: center; }
+            .candidate-card img { margin-right: 0; margin-bottom: 10px; width: 80px; height: 80px; }
+            .candidate-info { flex-direction: column; align-items: center; width: 100%; gap: 12px; }
+            .info-col { width: 100%; text-align: center; border-bottom: 1px solid #f1f3f5; padding-bottom: 5px; }
+            .info-col:last-child { border-bottom: none; }
+            .info-col span.value { text-align: center; max-width: 100%; font-size: 15px; }
+            .status-badge { display: inline-block; margin-top: 5px; }
+            .detail-main { padding: 15px; }
+            .eval-row { flex-direction: column; gap: 15px; }
+            .score-group { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+            .btn-score { width: 100%; height: 40px; }
+        }
         
         .qa-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 30px; }
         .qa-item { background: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #adb5bd; }
