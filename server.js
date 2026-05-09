@@ -266,6 +266,17 @@ app.put('/api/admin/inscriptions/:id/evaluate', basicAuth, (req, res) => {
     }
 });
 
+// 6.5. Excluir formulário do candidato
+app.delete('/api/admin/inscriptions/:id', basicAuth, (req, res) => {
+    const id = req.params.id;
+    try {
+        db.prepare("DELETE FROM inscricoes WHERE id = ?").run(id);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // 7. Obter configurações das regiões (público)
 app.get('/api/config/regions', (req, res) => {
     try {
@@ -289,7 +300,7 @@ app.post('/api/admin/config/regions', basicAuth, (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`=================================================`);
-    console.log(`✅ Servidor BBR Rodando em http://localhost${PORT === 80 ? '' : ':' + PORT}`);
-    console.log(`🔒 Painel Admin: http://localhost${PORT === 80 ? '' : ':' + PORT}/castitreach`);
+    console.log(`✅ Servidor BBR Rodando na porta ${PORT}`);
+    console.log(`🔒 Painel Admin disponível na rota /castitreach`);
     console.log(`=================================================`);
 });

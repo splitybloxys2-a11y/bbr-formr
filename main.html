@@ -1245,7 +1245,7 @@
                     <input type="checkbox" id="aceito_termos" required
                         style="margin: 0 8px 0 0; cursor: pointer; width: 15px; height: 15px; accent-color: #007bff;">
                     <label for="aceito_termos" style="font-size: 14.5px; color: #333; cursor: pointer;">
-                        <span class="req" style="margin-right: 3px;">*</span> Li e concordo com os <a href="termos.pdf"
+                        <span class="req" style="margin-right: 3px;">*</span> Li e concordo com os <a href="termos.html"
                             target="_blank" style="color: #0000EE; text-decoration: underline;">Termos de Uso e Política
                             de Privacidade</a>
                     </label>
@@ -1565,7 +1565,7 @@
                 if (foto) formData.append('foto_avatar', foto);
                 if (video) formData.append('video_bbr', video);
 
-                // Enviar para o Backend local
+                // Enviar para o servidor (VPS)
                 const response = await fetch('/submit', {
                     method: 'POST',
                     body: formData
@@ -1596,7 +1596,7 @@
 
             } catch (error) {
                 console.error('Erro ao enviar:', error);
-                alert('Houve um erro ao enviar sua inscrição. Verifique se o servidor local (iniciar.bat) está rodando e tente novamente.');
+                alert('Houve um erro ao enviar sua inscrição. Verifique sua conexão com a internet ou tente novamente mais tarde.');
             } finally {
                 btnSubmit.innerText = originalText;
                 btnSubmit.disabled = false;

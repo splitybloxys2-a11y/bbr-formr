@@ -128,6 +128,18 @@
                 <span id="list-title">Selecione uma região</span>
                 <span id="list-count" style="font-size: 14px; font-weight: normal; color: #868e96;"></span>
             </div>
+            
+            <div id="filter-bar" style="display: none; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <input type="text" id="search-candidate" placeholder="Pesquisar por Nome, ID ou Nick..." style="flex: 1; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;" oninput="filterCandidates()">
+                <select id="filter-status" style="padding: 10px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px; background: white;" onchange="filterCandidates()">
+                    <option value="">Todos os Status</option>
+                    <option value="OK">Aprovado (OK)</option>
+                    <option value="REPROVADO">Reprovado</option>
+                    <option value="STAND BY">Stand By</option>
+                    <option value="Não analisado">Não analisado</option>
+                </select>
+            </div>
+
             <div id="candidates-container">
                 <div class="empty-state">Selecione uma região na barra lateral para ver os formulários respondidos.</div>
             </div>
@@ -284,59 +296,112 @@
                 const data = await res.json();
                 candidatesData = data.inscriptions;
                 
-                document.getElementById('list-count').innerText = `${candidatesData.length} formulários`;
+                document.getElementById('filter-bar').style.display = 'flex';
+                document.getElementById('search-candidate').value = '';
+                document.getElementById('filter-status').value = '';
                 
-                if (candidatesData.length === 0) {
-                    container.innerHTML = '<div class="empty-state">Nenhum formulário encontrado para esta região.</div>';
-                    return;
-                }
-                
-                let html = '';
-                candidatesData.forEach(c => {
-                    const avatarSrc = c.foto_avatar_path ? (c.foto_avatar_path.startsWith('http') ? c.foto_avatar_path : '/' + c.foto_avatar_path) : 'https://via.placeholder.com/65?text=Sem+Foto';
-                    const statusClass = getStatusClass(c.status_produtor);
-                    const statusText = c.status_produtor && c.status_produtor !== 'Não analisado' ? c.status_produtor : 'Pendente';
-
-                    html += `
-                        <div class="candidate-card">
-                            <img src="${avatarSrc}" alt="Avatar" onerror="this.src='https://via.placeholder.com/65?text=Erro'">
-                            
-                            <div class="candidate-info">
-                                <div class="info-col">
-                                    <span class="label">Data Inscrição</span>
-                                    <span class="value">${formatDate(c.data_envio)}</span>
-                                </div>
-                                <div class="info-col">
-                                    <span class="label">Cód. Inscrição</span>
-                                    <span class="value" style="font-family: monospace;">${c.inscricao_id || 'N/A'}</span>
-                                </div>
-                                <div class="info-col">
-                                    <span class="label">Idade</span>
-                                    <span class="value">${c.idade || '-'}</span>
-                                </div>
-                                <div class="info-col">
-                                    <span class="label">Estado / Cidade</span>
-                                    <span class="value">${c.estado || '-'} / ${c.cidade || '-'}</span>
-                                </div>
-                                <div class="info-col" style="min-width: 80px; text-align: center;">
-                                    <span class="label">Status</span>
-                                    <span class="status-badge ${statusClass}">${statusText}</span>
-                                </div>
-                                <div class="info-col" style="min-width: 60px; text-align: center;">
-                                    <span class="label">Nota</span>
-                                    <span class="value" style="font-size: 16px; font-weight: bold;">${c.nota_produtor || '-'}</span>
-                                </div>
-                            </div>
-                            
-                            <button class="btn-analyze" onclick="openCandidate(${c.id})">Analisar Formulário</button>
-                        </div>
-                    `;
-                });
-                
-                container.innerHTML = html;
+                filterCandidates();
 
             } catch (e) {
                 container.innerHTML = '<div class="loading" style="color: red;">Erro ao carregar os dados.</div>';
+            }
+        }
+
+        function filterCandidates() {
+            const searchQuery = document.getElementById('search-candidate').value.toLowerCase();
+            const statusQuery = document.getElementById('filter-status').value;
+
+            const filtered = candidatesData.filter(c => {
+                const searchMatch = !searchQuery || 
+                    (c.nome && c.nome.toLowerCase().includes(searchQuery)) ||
+                    (c.inscricao_id && c.inscricao_id.toLowerCase().includes(searchQuery)) ||
+                    (c.nick_roblox && c.nick_roblox.toLowerCase().includes(searchQuery));
+                
+                let candidateStatus = c.status_produtor;
+                if (!candidateStatus) candidateStatus = 'Não analisado';
+
+                const statusMatch = !statusQuery || candidateStatus === statusQuery;
+
+                return searchMatch && statusMatch;
+            });
+
+            renderCandidates(filtered);
+        }
+
+        function renderCandidates(dataToRender) {
+            const container = document.getElementById('candidates-container');
+            document.getElementById('list-count').innerText = `${dataToRender.length} formulários`;
+            
+            if (dataToRender.length === 0) {
+                container.innerHTML = '<div class="empty-state">Nenhum formulário encontrado.</div>';
+                return;
+            }
+            
+            let html = '';
+            dataToRender.forEach(c => {
+                const avatarSrc = c.foto_avatar_path ? (c.foto_avatar_path.startsWith('http') ? c.foto_avatar_path : '/' + c.foto_avatar_path) : 'https://via.placeholder.com/65?text=Sem+Foto';
+                const statusClass = getStatusClass(c.status_produtor);
+                const statusText = c.status_produtor && c.status_produtor !== 'Não analisado' ? c.status_produtor : 'Pendente';
+
+                html += `
+                    <div class="candidate-card">
+                        <img src="${avatarSrc}" alt="Avatar" onerror="this.src='https://via.placeholder.com/65?text=Erro'">
+                        
+                        <div class="candidate-info">
+                            <div class="info-col">
+                                <span class="label">Data Inscrição</span>
+                                <span class="value">${formatDate(c.data_envio)}</span>
+                            </div>
+                            <div class="info-col">
+                                <span class="label">Cód. Inscrição</span>
+                                <span class="value" style="font-family: monospace;">${c.inscricao_id || 'N/A'}</span>
+                            </div>
+                            <div class="info-col">
+                                <span class="label">Nome</span>
+                                <span class="value">${c.nome || '-'}</span>
+                            </div>
+                            <div class="info-col">
+                                <span class="label">Idade</span>
+                                <span class="value">${c.idade || '-'}</span>
+                            </div>
+                            <div class="info-col">
+                                <span class="label">Estado / Cidade</span>
+                                <span class="value">${c.estado || '-'} / ${c.cidade || '-'}</span>
+                            </div>
+                            <div class="info-col" style="min-width: 80px; text-align: center;">
+                                <span class="label">Status</span>
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                            </div>
+                            <div class="info-col" style="min-width: 60px; text-align: center;">
+                                <span class="label">Nota</span>
+                                <span class="value" style="font-size: 16px; font-weight: bold;">${c.nota_produtor || '-'}</span>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-analyze" onclick="openCandidate(${c.id})">Analisar</button>
+                            <button class="btn-analyze" style="background: #fa5252;" onclick="deleteCandidate(${c.id})">Excluir</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        async function deleteCandidate(id) {
+            if (!confirm("Tem certeza que deseja EXCLUIR permanentemente este formulário? Esta ação não pode ser desfeita.")) return;
+            
+            try {
+                const res = await fetch(`/api/admin/inscriptions/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) throw new Error('Falha ao excluir');
+                
+                candidatesData = candidatesData.filter(c => c.id !== id);
+                filterCandidates();
+            } catch (e) {
+                alert('Erro ao excluir formulário.');
             }
         }
 
